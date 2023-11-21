@@ -394,3 +394,6 @@ def isOutsideActiveArea(camerax, cameray, obj):
 
 if __name__ == '__main__':
     main()
+
+
+hi
