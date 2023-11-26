@@ -65,13 +65,13 @@ def main():
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
-    pygame.display.set_icon(pygame.image.load('gameicon.png'))  #pygame function that sets the icon on the windows title bar 
-    DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT)) #is a small image ideal 32 x 32 pixels on a surface object used as a windows icon. If not the ideal size, the image will be compressed. 
-    pygame.display.set_caption('Squirrel Eat Squirrel')         
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)         #sets the font which the game will be viewed in 
+    pygame.display.set_icon(pygame.image.load('gameicon.png'))
+    DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
+    pygame.display.set_caption('Squirrel Eat Squirrel')
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
 
     # load the image files
-    L_SQUIR_IMG = pygame.image.load('squirrel.png')   #this is where the enemy and player squirrels images are loaded from
+    L_SQUIR_IMG = pygame.image.load('squirrel.png')
     R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False)
     GRASSIMAGES = []
     for i in range(1, 5):
@@ -310,7 +310,7 @@ def runGame():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-# random comment
+
 
 
 def drawHealthMeter(currentHealth):
@@ -320,7 +320,7 @@ def drawHealthMeter(currentHealth):
         pygame.draw.rect(DISPLAYSURF, WHITE, (15, 5 + (10 * MAXHEALTH) - i * 10, 20, 10), 1)
 
 
-def terminate(): # finishes the game, exit
+def terminate():
     pygame.quit()
     sys.exit()
 
@@ -332,7 +332,7 @@ def getBounceAmount(currentBounce, bounceRate, bounceHeight):
     # currentBounce will always be less than bounceRate
     return int(math.sin( (math.pi / float(bounceRate)) * currentBounce ) * bounceHeight)
 
-def getRandomVelocity(): # randomly determine how fast an enemy squirrel will move # 50/50 chance that speed will be positive or negative
+def getRandomVelocity():
     speed = random.randint(SQUIRRELMINSPEED, SQUIRRELMAXSPEED)
     if random.randint(0, 1) == 0:
         return speed
@@ -344,8 +344,8 @@ def getRandomOffCameraPos(camerax, cameray, objWidth, objHeight):
     # create a Rect of the camera view
     cameraRect = pygame.Rect(camerax, cameray, WINWIDTH, WINHEIGHT)
     while True:
-        x = random.randint(camerax - WINWIDTH, camerax + (2 * WINWIDTH)) # creating rectangle of camera view
-        y = random.randint(cameray - WINHEIGHT, cameray + (2 * WINHEIGHT)) # creating rectangle of camera view
+        x = random.randint(camerax - WINWIDTH, camerax + (2 * WINWIDTH))
+        y = random.randint(cameray - WINHEIGHT, cameray + (2 * WINHEIGHT))
         # create a Rect object with the random coordinates and use colliderect()
         # to make sure the right edge isn't in the camera view.
         objRect = pygame.Rect(x, y, objWidth, objHeight)
@@ -357,14 +357,14 @@ def makeNewSquirrel(camerax, cameray):
     sq = {}
     generalSize = random.randint(5, 25)
     multiplier = random.randint(1, 3)
-    sq['width']  = (generalSize + random.randint(0, 10)) * multiplier # width and height are set to random sizes to have variety
+    sq['width']  = (generalSize + random.randint(0, 10)) * multiplier
     sq['height'] = (generalSize + random.randint(0, 10)) * multiplier
     sq['x'], sq['y'] = getRandomOffCameraPos(camerax, cameray, sq['width'], sq['height'])
     sq['movex'] = getRandomVelocity()
     sq['movey'] = getRandomVelocity()
     if sq['movex'] < 0: # squirrel is facing left
         sq['surface'] = pygame.transform.scale(L_SQUIR_IMG, (sq['width'], sq['height']))
-    else: # squirrel is facing right # it is larger than 0
+    else: # squirrel is facing right
         sq['surface'] = pygame.transform.scale(R_SQUIR_IMG, (sq['width'], sq['height']))
     sq['bounce'] = 0
     sq['bouncerate'] = random.randint(10, 18)
