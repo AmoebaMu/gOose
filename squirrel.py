@@ -65,13 +65,13 @@ def main():
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
-    pygame.display.set_icon(pygame.image.load('gameicon.png'))
-    DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
-    pygame.display.set_caption('Squirrel Eat Squirrel')
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
+    pygame.display.set_icon(pygame.image.load('gameicon.png'))  #pygame function that sets the icon on the windows title bar 
+    DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT)) #is a small image ideal 32 x 32 pixels on a surface object used as a windows icon. If not the ideal size, the image will be compressed. 
+    pygame.display.set_caption('Squirrel Eat Squirrel')         
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)         #sets the font which the game will be viewed in 
 
     # load the image files
-    L_SQUIR_IMG = pygame.image.load('squirrel.png')
+    L_SQUIR_IMG = pygame.image.load('squirrel.png')   #this is where the enemy and player squirrels are loaded from
     R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False)
     GRASSIMAGES = []
     for i in range(1, 5):
