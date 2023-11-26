@@ -310,7 +310,7 @@ def runGame():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-
+# random comment
 
 
 def drawHealthMeter(currentHealth):
