@@ -320,7 +320,7 @@ def drawHealthMeter(currentHealth):
         pygame.draw.rect(DISPLAYSURF, WHITE, (15, 5 + (10 * MAXHEALTH) - i * 10, 20, 10), 1)
 
 
-def terminate():
+def terminate(): # finishes the game, exit
     pygame.quit()
     sys.exit()
 
@@ -332,7 +332,7 @@ def getBounceAmount(currentBounce, bounceRate, bounceHeight):
     # currentBounce will always be less than bounceRate
     return int(math.sin( (math.pi / float(bounceRate)) * currentBounce ) * bounceHeight)
 
-def getRandomVelocity():
+def getRandomVelocity(): # randomly determine how fast an enemy squirrel will move # 50/50 chance that speed will be positive or negative
     speed = random.randint(SQUIRRELMINSPEED, SQUIRRELMAXSPEED)
     if random.randint(0, 1) == 0:
         return speed
@@ -344,8 +344,8 @@ def getRandomOffCameraPos(camerax, cameray, objWidth, objHeight):
     # create a Rect of the camera view
     cameraRect = pygame.Rect(camerax, cameray, WINWIDTH, WINHEIGHT)
     while True:
-        x = random.randint(camerax - WINWIDTH, camerax + (2 * WINWIDTH))
-        y = random.randint(cameray - WINHEIGHT, cameray + (2 * WINHEIGHT))
+        x = random.randint(camerax - WINWIDTH, camerax + (2 * WINWIDTH)) # creating rectangle of camera view
+        y = random.randint(cameray - WINHEIGHT, cameray + (2 * WINHEIGHT)) # creating rectangle of camera view
         # create a Rect object with the random coordinates and use colliderect()
         # to make sure the right edge isn't in the camera view.
         objRect = pygame.Rect(x, y, objWidth, objHeight)
