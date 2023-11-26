@@ -165,7 +165,7 @@ def runGame():
             grassObjs.append(makeNewGrass(camerax, cameray))
         while len(squirrelObjs) < NUMSQUIRRELS:
             squirrelObjs.append(makeNewSquirrel(camerax, cameray))
-
+#break
         # adjust camerax and cameray if beyond the "camera slack"
         playerCenterx = playerObj['x'] + int(playerObj['size'] / 2)
         playerCentery = playerObj['y'] + int(playerObj['size'] / 2)
@@ -177,7 +177,7 @@ def runGame():
             cameray = playerCentery + CAMERASLACK - HALF_WINHEIGHT
         elif playerCentery - (cameray + HALF_WINHEIGHT) > CAMERASLACK:
             cameray = playerCentery - CAMERASLACK - HALF_WINHEIGHT
-
+#possible break here as well
         # draw the green background
         DISPLAYSURF.fill(GRASSCOLOR)
 
@@ -287,7 +287,7 @@ def runGame():
 
                         if playerObj['size'] > WINSIZE:
                             winMode = True # turn on "win mode"
-
+#break (in the middle of if not game over mode)
                     elif not invulnerableMode:
                         # player is smaller and takes damage
                         invulnerableMode = True
@@ -309,7 +309,7 @@ def runGame():
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
-
+#possible break here instead
 
 
 
