@@ -71,7 +71,7 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 32)         #sets the font which the game will be viewed in 
 
     # load the image files
-    L_SQUIR_IMG = pygame.image.load('squirrel.png')   #this is where the enemy and player squirrels are loaded from
+    L_SQUIR_IMG = pygame.image.load('squirrel.png')   #this is where the enemy and player squirrels images are loaded from
     R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False)
     GRASSIMAGES = []
     for i in range(1, 5):
