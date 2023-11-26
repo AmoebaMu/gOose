@@ -357,14 +357,14 @@ def makeNewSquirrel(camerax, cameray):
     sq = {}
     generalSize = random.randint(5, 25)
     multiplier = random.randint(1, 3)
-    sq['width']  = (generalSize + random.randint(0, 10)) * multiplier
+    sq['width']  = (generalSize + random.randint(0, 10)) * multiplier # width and height are set to random sizes to have variety
     sq['height'] = (generalSize + random.randint(0, 10)) * multiplier
     sq['x'], sq['y'] = getRandomOffCameraPos(camerax, cameray, sq['width'], sq['height'])
     sq['movex'] = getRandomVelocity()
     sq['movey'] = getRandomVelocity()
     if sq['movex'] < 0: # squirrel is facing left
         sq['surface'] = pygame.transform.scale(L_SQUIR_IMG, (sq['width'], sq['height']))
-    else: # squirrel is facing right
+    else: # squirrel is facing right # it is larger than 0
         sq['surface'] = pygame.transform.scale(R_SQUIR_IMG, (sq['width'], sq['height']))
     sq['bounce'] = 0
     sq['bouncerate'] = random.randint(10, 18)
