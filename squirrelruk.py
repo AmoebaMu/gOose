@@ -71,14 +71,14 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 32) #the font which the game will be viewed in
 
     # load the image files
-    L_SQUIR_IMG = pygame.image.load('squirrel.png') #This line is where the enemy and player squirell images are loaded
-    R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False)
+    L_SQUIR_IMG = pygame.image.load('squirrel.png') #This line is where the enemy and player squirrel images facing left are loaded, its noted to put png file in the same folder as gooseatgoose, failure to do so will result in a error.
+    R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False) #image of squirrel facing left, using the transform.flip function it faces to the right. Function contains three parameters to flip, the image to flip, boolean value for horizontal, and another for vertical. If true for second parameter and false for third, it returns the image facing it's right. 
     GRASSIMAGES = []
     for i in range(1, 5):
         GRASSIMAGES.append(pygame.image.load('grass%s.png' % i))
 
     while True:
-        runGame() #function run game is called 
+        runGame() #function rungame is called allowing game to begin
 
 
 def runGame():
@@ -100,11 +100,11 @@ def runGame():
 
     winSurf2 = BASICFONT.render('(Press "r" to restart.)', True, WHITE)
     winRect2 = winSurf2.get_rect()
-    winRect2.center = (HALF_WINWIDTH, HALF_WINHEIGHT + 30)
+    winRect2.center = (HALF_WINWIDTH, HALF_WINHEIGHT + 30) #from line 93-103 are variables that appear on screen after after game ends. If won, text "You have achieved OMEGA SQUIRREL!" appears, when lost "press 'R' to restart".
 
     # camerax and cameray are the top left of where the camera view is
-    camerax = 0
-    cameray = 0
+    camerax = 0 #the 2D world which is where the game is played. Camerax represents the x-axis of the world. The further the world is located the smaller the x values. The value 0 represents the origin of the world, where the squirrel is originally located. This value is a limited portion of an infinite 2d space, since its impossible to fit it on screen. 
+    cameray = 0 # represents the same idea as cameras, however in the y-axis. Depending on our camera x and y values, this created an area in which viewed by the player, areas outside these values can't be seen by the player. 
 
     grassObjs = []    # stores all the grass objects in the game
     squirrelObjs = [] # stores all the non-player squirrel objects
