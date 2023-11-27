@@ -68,17 +68,17 @@ def main():
     pygame.display.set_icon(pygame.image.load('gameicon.png'))
     DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT))
     pygame.display.set_caption('Squirrel Eat Squirrel')
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 32) #the font which the game will be viewed in
 
     # load the image files
-    L_SQUIR_IMG = pygame.image.load('squirrel.png')
+    L_SQUIR_IMG = pygame.image.load('squirrel.png') #This line is where the enemy and player squirell images are loaded
     R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False)
     GRASSIMAGES = []
     for i in range(1, 5):
         GRASSIMAGES.append(pygame.image.load('grass%s.png' % i))
 
     while True:
-        runGame()
+        runGame() #function run game is called 
 
 
 def runGame():
@@ -165,7 +165,7 @@ def runGame():
             grassObjs.append(makeNewGrass(camerax, cameray))
         while len(squirrelObjs) < NUMSQUIRRELS:
             squirrelObjs.append(makeNewSquirrel(camerax, cameray))
-
+#break
         # adjust camerax and cameray if beyond the "camera slack"
         playerCenterx = playerObj['x'] + int(playerObj['size'] / 2)
         playerCentery = playerObj['y'] + int(playerObj['size'] / 2)
