@@ -166,43 +166,46 @@ def runGame():
         while len(squirrelObjs) < NUMSQUIRRELS:
             squirrelObjs.append(makeNewSquirrel(camerax, cameray))
 
-        # adjust camerax and cameray if beyond the "camera slack"
-        playerCenterx = playerObj['x'] + int(playerObj['size'] / 2)
-        playerCentery = playerObj['y'] + int(playerObj['size'] / 2)
-        if (camerax + HALF_WINWIDTH) - playerCenterx > CAMERASLACK:
-            camerax = playerCenterx + CAMERASLACK - HALF_WINWIDTH
-        elif playerCenterx - (camerax + HALF_WINWIDTH) > CAMERASLACK:
-            camerax = playerCenterx - CAMERASLACK - HALF_WINWIDTH
-        if (cameray + HALF_WINHEIGHT) - playerCentery > CAMERASLACK:
-            cameray = playerCentery + CAMERASLACK - HALF_WINHEIGHT
-        elif playerCentery - (cameray + HALF_WINHEIGHT) > CAMERASLACK:
-            cameray = playerCentery - CAMERASLACK - HALF_WINHEIGHT
+        # adjust camerax and cameray if beyond the "camera slack" (ak- the camera slack is the number of pixels the player can move before the camera/screen is updated)
+        playerCenterx = playerObj['x'] + int(playerObj['size'] / 2) #ak- defines sort of the boundaries of where the camera displays the character, makes sure that the screen moves with the character
+        playerCentery = playerObj['y'] + int(playerObj['size'] / 2) #ak- the y coordinates of the border that the character needs to be in
+        if (camerax + HALF_WINWIDTH) - playerCenterx > CAMERASLACK: #ak- makes sure that the character is still within the screen/camera, x coordinates, helps make the character centered on screen
+            camerax = playerCenterx + CAMERASLACK - HALF_WINWIDTH #ak- if the difference between the center and the character's x coordinate is bigger than the camera slack, which is the limit/border, the camera will move accordingly
+        elif playerCenterx - (camerax + HALF_WINWIDTH) > CAMERASLACK: #ak- for the left direction, if statement above was for x coordinate being too far right
+            camerax = playerCenterx - CAMERASLACK - HALF_WINWIDTH #ak- changes the camera position and not the characters
+        if (cameray + HALF_WINHEIGHT) - playerCentery > CAMERASLACK: #ak- same thing as above but for y coordinates of character and camera
+            cameray = playerCentery + CAMERASLACK - HALF_WINHEIGHT #ak- for going up
+        elif playerCentery - (cameray + HALF_WINHEIGHT) > CAMERASLACK: 
+            cameray = playerCentery - CAMERASLACK - HALF_WINHEIGHT #ak- for going down
 
         # draw the green background
-        DISPLAYSURF.fill(GRASSCOLOR)
+        DISPLAYSURF.fill(GRASSCOLOR) #ak- colour was defined using rgb values at the beginning of the code, this colour fills the surface
 
         # draw all the grass objects on the screen
-        for gObj in grassObjs:
-            gRect = pygame.Rect( (gObj['x'] - camerax,
+        for gObj in grassObjs: #ak- goes through the grass image files
+            gRect = pygame.Rect( (gObj['x'] - camerax, #ak- creates a rectangular object with the parameters
                                   gObj['y'] - cameray,
                                   gObj['width'],
                                   gObj['height']) )
-            DISPLAYSURF.blit(GRASSIMAGES[gObj['grassImage']], gRect)
+            DISPLAYSURF.blit(GRASSIMAGES[gObj['grassImage']], gRect) #ak- brings the grass images and displays it on the surface, blit copies the image surface and draws it onto the display surface
 
 
         # draw the other squirrels
-        for sObj in squirrelObjs:
+        for sObj in squirrelObjs: #ak- similar to the grass image files, this does the same thing but for the squirrel file
             sObj['rect'] = pygame.Rect( (sObj['x'] - camerax,
-                                         sObj['y'] - cameray - getBounceAmount(sObj['bounce'], sObj['bouncerate'], sObj['bounceheight']),
+                                         sObj['y'] - cameray - getBounceAmount(sObj['bounce'], sObj['bouncerate'], sObj['bounceheight']), #for the movement of the enemy squirrels, function below
                                          sObj['width'],
                                          sObj['height']) )
-            DISPLAYSURF.blit(sObj['surface'], sObj['rect'])
+            DISPLAYSURF.blit(sObj['surface'], sObj['rect']) #ak- displays the image onto the surface
 
 
         # draw the player squirrel
-        flashIsOn = round(time.time(), 1) * 10 % 2 == 1
-        if not gameOverMode and not (invulnerableMode and flashIsOn):
-            playerObj['rect'] = pygame.Rect( (playerObj['x'] - camerax,
+        flashIsOn = round(time.time(), 1) * 10 % 2 == 1 #ak- flash for when the player squirrel is attacked by a larger squirrel and loses health, flashes the character and sort of erases the drawing of the squirrel
+            #ak- to flash the character, it will be drawn and erased every tenth of a second and repeats/flashes for two seconds
+            #to do so it grabs the current run time, rounds it to one decimal point and multiplies it by 10. The function checks if number is even or odd, if it is even then the function will be set to False (0==1)
+            #since time is constantly moving, the function will switch between True and False, drawing and erasing the squirrel 
+        if not gameOverMode and not (invulnerableMode and flashIsOn): #ak- if the game is running and the squirrel is not in its in invulnerable state when it is attacked
+            playerObj['rect'] = pygame.Rect( (playerObj['x'] - camerax, #ak- same as with the objects above, displays the player squirrel onto the surface
                                               playerObj['y'] - cameray - getBounceAmount(playerObj['bounce'], BOUNCERATE, BOUNCEHEIGHT),
                                               playerObj['size'],
                                               playerObj['size']) )
@@ -210,7 +213,7 @@ def runGame():
 
 
         # draw the health meter
-        drawHealthMeter(playerObj['health'])
+        drawHealthMeter(playerObj['health']) #displays the health indicator, function is expanded upon below
 
         for event in pygame.event.get(): # event handling loop
             if event.type == QUIT:
