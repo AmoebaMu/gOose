@@ -106,41 +106,41 @@ def runGame():
     camerax = 0 #the 2D world which is where the game is played. Camerax represents the x-axis of the world. The further the world is located the smaller the x values. The value 0 represents the origin of the world, where the squirrel is originally located. This value is a limited portion of an infinite 2d space, since its impossible to fit it on screen. 
     cameray = 0 # represents the same idea as cameras, however in the y-axis. Depending on our camera x and y values, this created an area in which viewed by the player, areas outside these values can't be seen by the player. 
 
-    grassObjs = []    # stores all the grass objects in the game
-    squirrelObjs = [] # stores all the non-player squirrel objects
+    grassObjs = []    # stores all the grass objects in the game, as new grass objects are created or removed, the list is updated.
+    squirrelObjs = [] # stores all the non-player squirrel objects, as new squirrel objects are created or removed, the list is updated.
     # stores the player object:
-    playerObj = {'surface': pygame.transform.scale(L_SQUIR_IMG, (STARTSIZE, STARTSIZE)),
+    playerObj = {'surface': pygame.transform.scale(L_SQUIR_IMG, (STARTSIZE, STARTSIZE)), #this variable is a dictionary value - ask
                  'facing': LEFT,
                  'size': STARTSIZE,
                  'x': HALF_WINWIDTH,
                  'y': HALF_WINHEIGHT,
                  'bounce':0,
-                 'health': MAXHEALTH}
+                 'health': MAXHEALTH} 
 
     moveLeft  = False
     moveRight = False
     moveUp    = False
-    moveDown  = False
+    moveDown  = False # lines 120 to 123 are move variables that track which arrow/WASD keys are being used/held down. -ask about false 
 
-    # start off with some random grass images on the screen
+    # start off with some random grass images on the screen, area on players screen starts off with a few grass objects
     for i in range(10):
-        grassObjs.append(makeNewGrass(camerax, cameray))
+        grassObjs.append(makeNewGrass(camerax, cameray)) #the function makenewgrass creates grass object, this process takes place in an area not visible to the player. The function then returns the grass object on an area visible to the player. 
         grassObjs[i]['x'] = random.randint(0, WINWIDTH)
-        grassObjs[i]['y'] = random.randint(0, WINHEIGHT)
+        grassObjs[i]['y'] = random.randint(0, WINHEIGHT) #ask about x and y coordinates and them being overwritten since the first grass objects must appear on screen.
 
-    while True: # main game loop
-        # Check if we should turn off invulnerability
-        if invulnerableMode and time.time() - invulnerableStartTime > INVULNTIME:
-            invulnerableMode = False
-
-        # move all the squirrels
+    while True: # main game loop which updates the game state, draw everything to the screen, and handles event.
+        # Check if we should turn off invulnerability, 
+        if invulnerableMode and time.time() - invulnerableStartTime > INVULNTIME: # Check if we should turn off invulnerability, this is when the player gets hit by an enemy squirrel and doesn't die, instead the player becomes invulnerabe for a few seconds (the INVULNTIME constant determines the time). At this time the player's squirrel will start to flash and not take any damage from other squirrels. 
+          invulnerableMode = False #once the invulnerability mode time is over, then the invulnerableMode is set to false
+      
+    # move all the enemy squirrels
         for sObj in squirrelObjs:
-            # move the squirrel, and adjust for their bounce
+            # move the squirrel, and adjust for their bounce. The movex and movey keys help the enemy squirels move up and down. If the values are positive then, they'll move right or down, if negative, they'll move left or up. The larger the values, the faster they'll move.
             sObj['x'] += sObj['movex']
             sObj['y'] += sObj['movey']
-            sObj['bounce'] += 1
+            sObj['bounce'] += 1 
             if sObj['bounce'] > sObj['bouncerate']:
-                sObj['bounce'] = 0 # reset bounce amount
+                sObj['bounce'] = 0 # reset bounce amount 
 
             # random chance they change direction
             if random.randint(0, 99) < DIRCHANGEFREQ:
@@ -158,7 +158,7 @@ def runGame():
                 del grassObjs[i]
         for i in range(len(squirrelObjs) - 1, -1, -1):
             if isOutsideActiveArea(camerax, cameray, squirrelObjs[i]):
-                del squirrelObjs[i]
+                del squirrelObjs[i] #need to ask
 
         # add more grass & squirrels if we don't have enough.
         while len(grassObjs) < NUMGRASS:
