@@ -312,9 +312,9 @@ def runGame():
 
 
 
-
+# NP
 def drawHealthMeter(currentHealth):  
-    for i in range(currentHealth): # draw red health bars  # the for loop on line 317 draws the filled-in red rectangle for the amount of health the player has
+    for i in range(currentHealth): # draw red health bars  # the for loop on line 317 draws the filled-in red rectangle for the amount of health the player has : NP
         pygame.draw.rect(DISPLAYSURF, RED,   (15, 5 + (10 * MAXHEALTH) - i * 10, 20, 10)) # display red rectangle on surface 
     for i in range(MAXHEALTH): # draw the white outlines #  the for loop on line 319 draws an unfilled white rectangle for all of the possible health the player could have 
         # (which is the integer value stored in the MAXHEALTH constant)
