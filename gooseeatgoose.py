@@ -27,9 +27,9 @@ GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seco
 MAXHEALTH = 3        # how much health the player starts with
 
 NUMGRASS = 80        # number of grass objects in the active area
-NUMSQUIRRELS = 30    # number of squirrels in the active area
-SQUIRRELMINSPEED = 3 # slowest squirrel speed
-SQUIRRELMAXSPEED = 7 # fastest squirrel speed
+NUMGEESE = 30    # number of squirrels in the active area
+GOOSEMINSPEED = 3 # slowest squirrel speed
+GOOSEMAXSPEED = 7 # fastest squirrel speed
 DIRCHANGEFREQ = 2    # % chance of direction change per frame
 LEFT = 'left'
 RIGHT = 'right'
@@ -163,7 +163,7 @@ def runGame():
         # add more grass & squirrels if we don't have enough.
         while len(grassObjs) < NUMGRASS:
             grassObjs.append(makeNewGrass(camerax, cameray))
-        while len(squirrelObjs) < NUMSQUIRRELS:
+        while len(squirrelObjs) < NUMGEESE:
             squirrelObjs.append(makeNewSquirrel(camerax, cameray))
 
         # adjust camerax and cameray if beyond the "camera slack"
@@ -333,7 +333,7 @@ def getBounceAmount(currentBounce, bounceRate, bounceHeight):
     return int(math.sin( (math.pi / float(bounceRate)) * currentBounce ) * bounceHeight)
 
 def getRandomVelocity():
-    speed = random.randint(SQUIRRELMINSPEED, SQUIRRELMAXSPEED)
+    speed = random.randint(GOOSEMINSPEED, GOOSEMAXSPEED)
     if random.randint(0, 1) == 0:
         return speed
     else:
@@ -363,9 +363,9 @@ def makeNewSquirrel(camerax, cameray):
     sq['movex'] = getRandomVelocity()
     sq['movey'] = getRandomVelocity()
     if sq['movex'] < 0: # squirrel is facing left
-        sq['surface'] = pygame.transform.scale(L_SQUIR_IMG, (sq['width'], sq['height']))
+        sq['surface'] = pygame.transform.scale(L_GOOSE_IMG, (sq['width'], sq['height']))
     else: # squirrel is facing right
-        sq['surface'] = pygame.transform.scale(R_SQUIR_IMG, (sq['width'], sq['height']))
+        sq['surface'] = pygame.transform.scale(R_GOOSE_IMG, (sq['width'], sq['height']))
     sq['bounce'] = 0
     sq['bouncerate'] = random.randint(10, 18)
     sq['bounceheight'] = random.randint(10, 50)
