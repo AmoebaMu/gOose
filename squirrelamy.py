@@ -216,11 +216,11 @@ def runGame():
         drawHealthMeter(playerObj['health']) #displays the health indicator, function is expanded upon below
 
         for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT:
-                terminate()
-
-            elif event.type == KEYDOWN:
-                if event.key in (K_UP, K_w):
+            if event.type == QUIT: #ak- event loop runs all the tasks and callbacks for the code to run
+                terminate() #ak- if the QUIT event is running, then the code should terminate and stop
+            #ak- below is the code for the keys that allow the player to move on the screen (using WASD directions)
+            elif event.type == KEYDOWN: 
+                if event.key in (K_UP, K_w): #ak- if W is pressed, the player should move up, which is why move down is false; sets the respective movement variables to either True or False
                     moveDown = False
                     moveUp = True
                 elif event.key in (K_DOWN, K_s):
@@ -229,8 +229,8 @@ def runGame():
                 elif event.key in (K_LEFT, K_a):
                     moveRight = False
                     moveLeft = True
-                    if playerObj['facing'] != LEFT: # change player image
-                        playerObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (playerObj['size'], playerObj['size']))
+                    if playerObj['facing'] != LEFT: # change player image #ak- changes the player image to face the correct direction that it is going, this line checks that it's facing left
+                        playerObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (playerObj['size'], playerObj['size'])) #ak- applies a transformation on the image to face left
                     playerObj['facing'] = LEFT
                 elif event.key in (K_RIGHT, K_d):
                     moveLeft = False
@@ -238,13 +238,13 @@ def runGame():
                     if playerObj['facing'] != RIGHT: # change player image
                         playerObj['surface'] = pygame.transform.scale(R_SQUIR_IMG, (playerObj['size'], playerObj['size']))
                     playerObj['facing'] = RIGHT
-                elif winMode and event.key == K_r:
+                elif winMode and event.key == K_r: #ak- for when the player wins the game, player presses r to run the game again, stops the old one and starts a new game
                     return
 
-            elif event.type == KEYUP:
+            elif event.type == KEYUP: #ak- for when the key is not pressed anymore, which is why it's called keyup, the key is up and not pressed down; makes sure that the player does not continue to move after key is pressed
                 # stop moving the player's squirrel
                 if event.key in (K_LEFT, K_a):
-                    moveLeft = False
+                    moveLeft = False #ak- sets the movement variable to false to stop the player from going in that direction
                 elif event.key in (K_RIGHT, K_d):
                     moveRight = False
                 elif event.key in (K_UP, K_w):
@@ -252,24 +252,24 @@ def runGame():
                 elif event.key in (K_DOWN, K_s):
                     moveDown = False
 
-                elif event.key == K_ESCAPE:
+                elif event.key == K_ESCAPE: #ak- if escape key is pressed, then the code will stop running, the game will stop
                     terminate()
 
-        if not gameOverMode:
+        if not gameOverMode: #ak- only allows movement when the game is still running/not over
             # actually move the player
             if moveLeft:
-                playerObj['x'] -= MOVERATE
+                playerObj['x'] -= MOVERATE #ak- actually moves the player, changes the x values so that the position on the screen is changed according to the keys pressed from earlier
             if moveRight:
-                playerObj['x'] += MOVERATE
+                playerObj['x'] += MOVERATE #ak - moverate is how fast the player is moving
             if moveUp:
-                playerObj['y'] -= MOVERATE
+                playerObj['y'] -= MOVERATE #ak- changes the y value coordinate of the player according to the keys that are pressed
             if moveDown:
                 playerObj['y'] += MOVERATE
 
-            if (moveLeft or moveRight or moveUp or moveDown) or playerObj['bounce'] != 0:
-                playerObj['bounce'] += 1
+            if (moveLeft or moveRight or moveUp or moveDown) or playerObj['bounce'] != 0: #ak- the playerObj['bounce'] part is what point of bouncing the player is, the bounce value 
+                playerObj['bounce'] += 1 #ak- if the player stops moving but the bounce hasn't finished, makes sure that the bounce still finishes
 
-            if playerObj['bounce'] > BOUNCERATE:
+            if playerObj['bounce'] > BOUNCERATE: #ak- makes sure that the bounce does not become larger than the bouncerate, keeps the bounce constant to the current rate
                 playerObj['bounce'] = 0 # reset bounce amount
 
             # check if the player has collided with any squirrels
