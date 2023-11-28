@@ -273,17 +273,17 @@ def runGame():
                 playerObj['bounce'] = 0 # reset bounce amount
 
             # check if the player has collided with any squirrels
-            for i in range(len(squirrelObjs)-1, -1, -1):
+            for i in range(len(squirrelObjs)-1, -1, -1): #ak- takes the list of squirrelObjs and starts at the last index, since a squirrel may or may not disappear when collisions happen
                 sqObj = squirrelObjs[i]
                 if 'rect' in sqObj and playerObj['rect'].colliderect(sqObj['rect']):
                     # a player/squirrel collision has occurred
 
-                    if sqObj['width'] * sqObj['height'] <= playerObj['size']**2:
+                    if sqObj['width'] * sqObj['height'] <= playerObj['size']**2: #ak- checks and compares the sizes of the player and the collided squirrel
                         # player is larger and eats the squirrel
-                        playerObj['size'] += int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1
+                        playerObj['size'] += int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1 #ak- increases the size of the player squirrel based on the smaller squirrel collided
                         del squirrelObjs[i]
 
-                        if playerObj['facing'] == LEFT:
+                        if playerObj['facing'] == LEFT: #ak- updates the size of the player image using the transform function in pygame, also accounts for direction facing
                             playerObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (playerObj['size'], playerObj['size']))
                         if playerObj['facing'] == RIGHT:
                             playerObj['surface'] = pygame.transform.scale(R_SQUIR_IMG, (playerObj['size'], playerObj['size']))
@@ -294,24 +294,24 @@ def runGame():
                     elif not invulnerableMode:
                         # player is smaller and takes damage
                         invulnerableMode = True
-                        invulnerableStartTime = time.time()
+                        invulnerableStartTime = time.time() #ak- starts the time for a short period of invulnerability 
                         playerObj['health'] -= 1
                         if playerObj['health'] == 0:
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
         else:
             # game is over, show "game over" text
-            DISPLAYSURF.blit(gameOverSurf, gameOverRect)
+            DISPLAYSURF.blit(gameOverSurf, gameOverRect) #ak- displays the game over text onto the surface created by the code
             if time.time() - gameOverStartTime > GAMEOVERTIME:
-                return # end the current game
+                return # end the current game #ak- after a certain period of time, the game will restart and continue running the code
 
         # check if the player has won.
         if winMode:
             DISPLAYSURF.blit(winSurf, winRect)
             DISPLAYSURF.blit(winSurf2, winRect2)
 
-        pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        pygame.display.update() #ak- only updates a portion of the screen
+        FPSCLOCK.tick(FPS) #ak- tracks the time to update the screen
 
 
 
