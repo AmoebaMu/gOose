@@ -147,9 +147,9 @@ def runGame():
                 sObj['movex'] = getRandomVelocity()
                 sObj['movey'] = getRandomVelocity()
                 if sObj['movex'] > 0: # faces right
-                    sObj['surface'] = pygame.transform.scale(R_SQUIR_IMG, (sObj['width'], sObj['height']))
+                    sObj['surface'] = pygame.transform.scale(R_GOOSE_IMG, (sObj['width'], sObj['height']))
                 else: # faces left
-                    sObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (sObj['width'], sObj['height']))
+                    sObj['surface'] = pygame.transform.scale(L_GOOSE_IMG, (sObj['width'], sObj['height']))
 
 
         # go through all the objects and see if any need to be deleted.
@@ -227,13 +227,13 @@ def runGame():
                     moveRight = False
                     moveLeft = True
                     if playerObj['facing'] != LEFT: # change player image
-                        playerObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (playerObj['size'], playerObj['size']))
+                        playerObj['surface'] = pygame.transform.scale(L_GOOSE_IMG, (playerObj['size'], playerObj['size']))
                     playerObj['facing'] = LEFT
                 elif event.key in (K_RIGHT, K_d):
                     moveLeft = False
                     moveRight = True
                     if playerObj['facing'] != RIGHT: # change player image
-                        playerObj['surface'] = pygame.transform.scale(R_SQUIR_IMG, (playerObj['size'], playerObj['size']))
+                        playerObj['surface'] = pygame.transform.scale(R_GOOSE_IMG, (playerObj['size'], playerObj['size']))
                     playerObj['facing'] = RIGHT
                 elif winMode and event.key == K_r:
                     return
