@@ -21,7 +21,7 @@ MOVERATE = 9         # how fast the player moves
 BOUNCERATE = 6       # how fast the player bounces (large is slower)
 BOUNCEHEIGHT = 30    # how high the player bounces
 STARTSIZE = 50       # how big the player starts off
-WINSIZE = 500        # how big the player needs to be to win
+WINSIZE = 600        # how big the player needs to be to win
 INVULNTIME = 2       # how long the player is invulnerable after being hit in seconds
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
 MAXHEALTH = 3        # how much health the player starts with
@@ -355,10 +355,10 @@ def getRandomOffCameraPos(camerax, cameray, objWidth, objHeight):
 
 def makeNewSquirrel(camerax, cameray):
     sq = {}
-    generalSize = random.randint(5, 45)
+    generalSize = random.randint(5, 40)
     multiplier = random.randint(1, 3)
-    sq['width']  = (generalSize + random.randint(0, 20)) * multiplier
-    sq['height'] = (generalSize + random.randint(0, 20)) * multiplier
+    sq['width']  = (generalSize + random.randint(0, 15)) * multiplier
+    sq['height'] = (generalSize + random.randint(0, 15)) * multiplier
     sq['x'], sq['y'] = getRandomOffCameraPos(camerax, cameray, sq['width'], sq['height'])
     sq['movex'] = getRandomVelocity()
     sq['movey'] = getRandomVelocity()
