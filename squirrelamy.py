@@ -20,8 +20,8 @@ CAMERASLACK = 90     # how far from the center the squirrel moves before moving 
 MOVERATE = 9         # how fast the player moves
 BOUNCERATE = 6       # how fast the player bounces (large is slower)
 BOUNCEHEIGHT = 30    # how high the player bounces
-STARTSIZE = 25       # how big the player starts off
-WINSIZE = 300        # how big the player needs to be to win
+STARTSIZE = 30       # how big the player starts off
+WINSIZE = 350        # how big the player needs to be to win
 INVULNTIME = 2       # how long the player is invulnerable after being hit in seconds
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
 MAXHEALTH = 3        # how much health the player starts with
@@ -71,7 +71,7 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
 
     # load the image files
-    L_SQUIR_IMG = pygame.image.load('squirrel.png')
+    L_SQUIR_IMG = pygame.image.load('gooseimg.png')
     R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False)
     GRASSIMAGES = []
     for i in range(1, 5):
@@ -296,9 +296,11 @@ def runGame():
                         invulnerableMode = True
                         invulnerableStartTime = time.time() #ak- starts the time for a short period of invulnerability 
                         playerObj['health'] -= 1
+                        playerObj['size'] -= int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1
                         if playerObj['health'] == 0:
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
+                        
         else:
             # game is over, show "game over" text
             DISPLAYSURF.blit(gameOverSurf, gameOverRect) #ak- displays the game over text onto the surface created by the code

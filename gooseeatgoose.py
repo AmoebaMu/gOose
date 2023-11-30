@@ -20,7 +20,7 @@ CAMERASLACK = 90     # how far from the center the squirrel moves before moving 
 MOVERATE = 9         # how fast the player moves
 BOUNCERATE = 6       # how fast the player bounces (large is slower)
 BOUNCEHEIGHT = 30    # how high the player bounces
-STARTSIZE = 50       # how big the player starts off
+STARTSIZE = 40       # how big the player starts off
 WINSIZE = 600        # how big the player needs to be to win
 INVULNTIME = 2       # how long the player is invulnerable after being hit in seconds
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
@@ -293,6 +293,7 @@ def runGame():
                         invulnerableMode = True
                         invulnerableStartTime = time.time()
                         playerObj['health'] -= 1
+                        playerObj['size'] -= int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1
                         if playerObj['health'] == 0:
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
