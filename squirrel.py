@@ -71,14 +71,14 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 32)         #sets the font which the game will be viewed in 
 
     # load the image files
-    L_SQUIR_IMG = pygame.image.load('squirrel.png')   #this is where the enemy and player squirrels images are loaded from
-    R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False)
+    L_SQUIR_IMG = pygame.image.load('squirrel.png') #rb- This line is where the enemy and player squirrel images facing left are loaded, its noted to put png file in the same folder as gooseatgoose, failure to do so will result in a error.
+    R_SQUIR_IMG = pygame.transform.flip(L_SQUIR_IMG, True, False) #rb- #image of squirrel facing left, using the transform.flip function it faces to the right. Function contains three parameters to flip, the image to flip, boolean value for horizontal, and another for vertical. If true for second parameter and false for third, it returns the image facing it's right. 
     GRASSIMAGES = []
     for i in range(1, 5):
         GRASSIMAGES.append(pygame.image.load('grass%s.png' % i))
 
     while True:
-        runGame()
+        runGame() #rb- function rungame is called allowing game to begin
 
 
 def runGame():
@@ -100,16 +100,16 @@ def runGame():
 
     winSurf2 = BASICFONT.render('(Press "r" to restart.)', True, WHITE)
     winRect2 = winSurf2.get_rect()
-    winRect2.center = (HALF_WINWIDTH, HALF_WINHEIGHT + 30)
+    winRect2.center = (HALF_WINWIDTH, HALF_WINHEIGHT + 30) #rb- from line 93-103 are variables that appear on screen after after game ends. If won, text "You have achieved OMEGA SQUIRREL!" appears, when lost "press 'R' to restart".
 
     # camerax and cameray are the top left of where the camera view is
-    camerax = 0
-    cameray = 0
+    camerax = 0 #rb- the 2D world which is where the game is played. Camerax represents the x-axis of the world. The further the world is located the smaller the x values. The value 0 represents the origin of the world, where the squirrel is originally located. This value is a limited portion of an infinite 2d space, since its impossible to fit it on screen.
+    cameray = 0 #rb- represents the same idea as cameras, however in the y-axis. Depending on our camera x and y values, this created an area in which viewed by the player, areas outside these values can't be seen by the player.
 
-    grassObjs = []    # stores all the grass objects in the game
-    squirrelObjs = [] # stores all the non-player squirrel objects
+    grassObjs = []    #rb- stores all the grass objects in the game, as new grass objects are created or removed, the list is updated.
+    squirrelObjs = [] #rb- stores all the non-player squirrel objects, as new squirrel objects are created or removed, the list is updated.
     # stores the player object:
-    playerObj = {'surface': pygame.transform.scale(L_SQUIR_IMG, (STARTSIZE, STARTSIZE)),
+    playerObj = {'surface': pygame.transform.scale(L_SQUIR_IMG, (STARTSIZE, STARTSIZE)), #rb- this variable is a dictionary value
                  'facing': LEFT,
                  'size': STARTSIZE,
                  'x': HALF_WINWIDTH,
@@ -117,25 +117,25 @@ def runGame():
                  'bounce':0,
                  'health': MAXHEALTH}
 
-    moveLeft  = False
+    moveLeft  = False #ak- makes sure that the player isn't moving by itself when game first starts, until keys are pressed
     moveRight = False
     moveUp    = False
-    moveDown  = False
+    moveDown  = False #rb- lines 120 to 123 are move variables that track which arrow/WASD keys are being used/held down
 
     # start off with some random grass images on the screen
     for i in range(10):
-        grassObjs.append(makeNewGrass(camerax, cameray))
+        grassObjs.append(makeNewGrass(camerax, cameray)) #rb- the function makenewgrass creates grass object, this process takes place in an area not visible to the player. The function then returns the grass object on an area visible to the player. 
         grassObjs[i]['x'] = random.randint(0, WINWIDTH)
-        grassObjs[i]['y'] = random.randint(0, WINHEIGHT)
+        grassObjs[i]['y'] = random.randint(0, WINHEIGHT) #ak- assigns a random x and y coordinate for the grass to appear within the window height and width
 
-    while True: # main game loop
+    while True: # main game loop #rb- updates the game state, draw everything to the screen, and handles event.
         # Check if we should turn off invulnerability
-        if invulnerableMode and time.time() - invulnerableStartTime > INVULNTIME:
-            invulnerableMode = False
+        if invulnerableMode and time.time() - invulnerableStartTime > INVULNTIME: #rb- this is when the player gets hit by an enemy squirrel and doesn't die, instead the player becomes invulnerabe for a few seconds (the INVULNTIME constant determines the time). At this time the player's squirrel will start to flash and not take any damage from other squirrels. 
+            invulnerableMode = False #rb- once the invulnerability mode time is over, then the invulnerableMode is set to false
 
         # move all the squirrels
         for sObj in squirrelObjs:
-            # move the squirrel, and adjust for their bounce
+            # move the squirrel, and adjust for their bounce. #rb- The movex and movey keys help the enemy squirels move up and down. If the values are positive then, they'll move right or down, if negative, they'll move left or up. The larger the values, the faster they'll move.
             sObj['x'] += sObj['movex']
             sObj['y'] += sObj['movey']
             sObj['bounce'] += 1
@@ -166,43 +166,46 @@ def runGame():
         while len(squirrelObjs) < NUMSQUIRRELS:
             squirrelObjs.append(makeNewSquirrel(camerax, cameray))
 
-        # adjust camerax and cameray if beyond the "camera slack"
-        playerCenterx = playerObj['x'] + int(playerObj['size'] / 2)
-        playerCentery = playerObj['y'] + int(playerObj['size'] / 2)
-        if (camerax + HALF_WINWIDTH) - playerCenterx > CAMERASLACK:
-            camerax = playerCenterx + CAMERASLACK - HALF_WINWIDTH
-        elif playerCenterx - (camerax + HALF_WINWIDTH) > CAMERASLACK:
-            camerax = playerCenterx - CAMERASLACK - HALF_WINWIDTH
-        if (cameray + HALF_WINHEIGHT) - playerCentery > CAMERASLACK:
-            cameray = playerCentery + CAMERASLACK - HALF_WINHEIGHT
+        # adjust camerax and cameray if beyond the "camera slack" (ak- the camera slack is the number of pixels the player can move before the camera/screen is updated)
+        playerCenterx = playerObj['x'] + int(playerObj['size'] / 2) #ak- defines sort of the boundaries of where the camera displays the character, makes sure that the screen moves with the character
+        playerCentery = playerObj['y'] + int(playerObj['size'] / 2) #ak- the y coordinates of the border that the character needs to be in
+        if (camerax + HALF_WINWIDTH) - playerCenterx > CAMERASLACK: #ak- makes sure that the character is still within the screen/camera, x coordinates, helps make the character centered on screen
+            camerax = playerCenterx + CAMERASLACK - HALF_WINWIDTH #ak- if the difference between the center and the character's x coordinate is bigger than the camera slack, which is the limit/border, the camera will move accordingly
+        elif playerCenterx - (camerax + HALF_WINWIDTH) > CAMERASLACK: #ak- for the left direction, if statement above was for x coordinate being too far right
+            camerax = playerCenterx - CAMERASLACK - HALF_WINWIDTH #ak- changes the camera position and not the characters
+        if (cameray + HALF_WINHEIGHT) - playerCentery > CAMERASLACK: #ak- same thing as above but for y coordinates of character and camera
+            cameray = playerCentery + CAMERASLACK - HALF_WINHEIGHT #ak- for going up
         elif playerCentery - (cameray + HALF_WINHEIGHT) > CAMERASLACK:
-            cameray = playerCentery - CAMERASLACK - HALF_WINHEIGHT
+            cameray = playerCentery - CAMERASLACK - HALF_WINHEIGHT #ak- for going down
 
         # draw the green background
-        DISPLAYSURF.fill(GRASSCOLOR)
+        DISPLAYSURF.fill(GRASSCOLOR) #ak- colour was defined using rgb values at the beginning of the code, this colour fills the surface
 
         # draw all the grass objects on the screen
-        for gObj in grassObjs:
-            gRect = pygame.Rect( (gObj['x'] - camerax,
+        for gObj in grassObjs: #ak- goes through the grass image files
+            gRect = pygame.Rect( (gObj['x'] - camerax, #ak- creates a rectangular object with the parameters
                                   gObj['y'] - cameray,
                                   gObj['width'],
                                   gObj['height']) )
-            DISPLAYSURF.blit(GRASSIMAGES[gObj['grassImage']], gRect)
+            DISPLAYSURF.blit(GRASSIMAGES[gObj['grassImage']], gRect) #ak- brings the grass images and displays it on the surface, blit copies the image surface and draws it onto the display surface
 
 
         # draw the other squirrels
-        for sObj in squirrelObjs:
+        for sObj in squirrelObjs: #ak- similar to the grass image files, this does the same thing but for the squirrel file
             sObj['rect'] = pygame.Rect( (sObj['x'] - camerax,
-                                         sObj['y'] - cameray - getBounceAmount(sObj['bounce'], sObj['bouncerate'], sObj['bounceheight']),
+                                         sObj['y'] - cameray - getBounceAmount(sObj['bounce'], sObj['bouncerate'], sObj['bounceheight']), #ak- for the movement of the enemy squirrels, function below
                                          sObj['width'],
                                          sObj['height']) )
-            DISPLAYSURF.blit(sObj['surface'], sObj['rect'])
+            DISPLAYSURF.blit(sObj['surface'], sObj['rect']) #ak- displays the image onto the surface
 
 
         # draw the player squirrel
-        flashIsOn = round(time.time(), 1) * 10 % 2 == 1
-        if not gameOverMode and not (invulnerableMode and flashIsOn):
-            playerObj['rect'] = pygame.Rect( (playerObj['x'] - camerax,
+        flashIsOn = round(time.time(), 1) * 10 % 2 == 1 #ak- flash for when the player squirrel is attacked by a larger squirrel and loses health, flashes the character and sort of erases the drawing of the squirrel
+            #ak- to flash the character, it will be drawn and erased every tenth of a second and repeats/flashes for two seconds
+            #to do so it grabs the current run time, rounds it to one decimal point and multiplies it by 10. The function checks if number is even or odd, if it is even then the function will be set to False (0==1)
+            #since time is constantly moving, the function will switch between True and False, drawing and erasing the squirrel 
+        if not gameOverMode and not (invulnerableMode and flashIsOn): #ak- if the game is running and the squirrel is not in its in invulnerable state when it is attacked
+            playerObj['rect'] = pygame.Rect( (playerObj['x'] - camerax, #ak- same as with the objects above, displays the player squirrel onto the surface
                                               playerObj['y'] - cameray - getBounceAmount(playerObj['bounce'], BOUNCERATE, BOUNCEHEIGHT),
                                               playerObj['size'],
                                               playerObj['size']) )
@@ -213,11 +216,11 @@ def runGame():
         drawHealthMeter(playerObj['health'])
 
         for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT:
-                terminate()
-
+            if event.type == QUIT: #ak- event loop runs all the tasks and callbacks for the code to run
+                terminate() #ak- if the QUIT event is running, then the code should terminate and stop
+            #ak- below is the code for the keys that allow the player to move on the screen (using WASD directions)
             elif event.type == KEYDOWN:
-                if event.key in (K_UP, K_w):
+                if event.key in (K_UP, K_w): #ak- if W is pressed, the player should move up, which is why move down is false; sets the respective movement variables to either True or False
                     moveDown = False
                     moveUp = True
                 elif event.key in (K_DOWN, K_s):
@@ -226,8 +229,8 @@ def runGame():
                 elif event.key in (K_LEFT, K_a):
                     moveRight = False
                     moveLeft = True
-                    if playerObj['facing'] != LEFT: # change player image
-                        playerObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (playerObj['size'], playerObj['size']))
+                    if playerObj['facing'] != LEFT: # change player image #ak- changes the player image to face the correct direction that it is going, this line checks that it's facing left
+                        playerObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (playerObj['size'], playerObj['size'])) #ak- applies a transformation on the image to face left
                     playerObj['facing'] = LEFT
                 elif event.key in (K_RIGHT, K_d):
                     moveLeft = False
@@ -235,13 +238,13 @@ def runGame():
                     if playerObj['facing'] != RIGHT: # change player image
                         playerObj['surface'] = pygame.transform.scale(R_SQUIR_IMG, (playerObj['size'], playerObj['size']))
                     playerObj['facing'] = RIGHT
-                elif winMode and event.key == K_r:
+                elif winMode and event.key == K_r: #ak- for when the player wins the game, player presses r to run the game again, stops the old one and starts a new game
                     return
 
-            elif event.type == KEYUP:
+            elif event.type == KEYUP: #ak- for when the key is not pressed anymore, which is why it's called keyup, the key is up and not pressed down; makes sure that the player does not continue to move after key is pressed
                 # stop moving the player's squirrel
                 if event.key in (K_LEFT, K_a):
-                    moveLeft = False
+                    moveLeft = False #ak- sets the movement variable to false to stop the player from going in that direction
                 elif event.key in (K_RIGHT, K_d):
                     moveRight = False
                 elif event.key in (K_UP, K_w):
@@ -249,21 +252,21 @@ def runGame():
                 elif event.key in (K_DOWN, K_s):
                     moveDown = False
 
-                elif event.key == K_ESCAPE:
+                elif event.key == K_ESCAPE: #ak- if escape key is pressed, then the code will stop running, the game will stop
                     terminate()
 
-        if not gameOverMode:
+        if not gameOverMode: #ak- only allows movement when the game is still running/not over
             # actually move the player
             if moveLeft:
-                playerObj['x'] -= MOVERATE
+                playerObj['x'] -= MOVERATE #ak- actually moves the player, changes the x values so that the position on the screen is changed according to the keys pressed from earlier
             if moveRight:
-                playerObj['x'] += MOVERATE
+                playerObj['x'] += MOVERATE #ak - moverate is how fast the player is moving
             if moveUp:
-                playerObj['y'] -= MOVERATE
+                playerObj['y'] -= MOVERATE #ak- changes the y value coordinate of the player according to the keys that are pressed
             if moveDown:
                 playerObj['y'] += MOVERATE
 
-            if (moveLeft or moveRight or moveUp or moveDown) or playerObj['bounce'] != 0:
+            if (moveLeft or moveRight or moveUp or moveDown) or playerObj['bounce'] != 0: #ak- the playerObj['bounce'] part is what point of bouncing the player is, the bounce value 
                 playerObj['bounce'] += 1
 
             if playerObj['bounce'] > BOUNCERATE:
@@ -310,7 +313,6 @@ def runGame():
         pygame.display.update()
         FPSCLOCK.tick(FPS)
 
-# random comment
 
 
 def drawHealthMeter(currentHealth):
