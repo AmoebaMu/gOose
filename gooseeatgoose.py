@@ -23,11 +23,13 @@ BOUNCEHEIGHT = 30    # how high the player bounces
 STARTSIZE = 40       # how big the player starts off
 WINSIZE = 600        # how big the player needs to be to win
 INVULNTIME = 2       # how long the player is invulnerable after being hit in seconds
+#SLOWTIME = 4
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
 MAXHEALTH = 3        # how much health the player starts with
 
 NUMGRASS = 80        # number of grass objects in the active area
 NUMGEESE = 30    # number of squirrels in the active area
+#NUMPOOP = 20
 GOOSEMINSPEED = 3 # slowest squirrel speed
 GOOSEMAXSPEED = 7 # fastest squirrel speed
 DIRCHANGEFREQ = 2    # % chance of direction change per frame
@@ -47,7 +49,7 @@ Player data structure keys:
     'size' - the width and height of the player in pixels. (The width & height are always the same.)
     'bounce' - represents at what point in a bounce the player is in. 0 means standing (no bounce), up to BOUNCERATE (the completion of the bounce)
     'health' - an integer showing how many more times the player can be hit by a larger squirrel before dying.
-Enemy Squirrel data structure keys:
+Enemy Goose data structure keys:
     'surface' - the pygame.Surface object that stores the image of the squirrel which will be drawn to the screen.
     'movex' - how many pixels per frame the squirrel moves horizontally. A negative integer is moving to the left, a positive to the right.
     'movey' - how many pixels per frame the squirrel moves vertically. A negative integer is moving up, a positive moving down.
@@ -88,6 +90,8 @@ def runGame():
     gameOverMode = False      # if the player has lost
     gameOverStartTime = 0     # time the player lost
     winMode = False           # if the player has won
+    #slowMode = False
+    #slowMode = 0
 
     # create the surfaces to hold game text
     gameOverSurf = BASICFONT.render('Game Over', True, WHITE)
@@ -107,7 +111,7 @@ def runGame():
     cameray = 0
 
     grassObjs = []    # stores all the grass objects in the game
-    squirrelObjs = [] # stores all the non-player squirrel objects
+    gooseObjs = [] # stores all the non-player goose objects
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
                  'facing': LEFT,
@@ -128,14 +132,20 @@ def runGame():
         grassObjs[i]['x'] = random.randint(0, WINWIDTH)
         grassObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
+    #random poop
+    #for i in range(5):
+        #poopObjs.append(makeNewPoop(camerax, cameray))
+        #poopObjs[i]['x'] = random.randint(0, WINWIDTH)
+        #poopObjs[i]['y'] = random.randint(0, WINHEIGHT)
+
     while True: # main game loop
         # Check if we should turn off invulnerability
         if invulnerableMode and time.time() - invulnerableStartTime > INVULNTIME:
             invulnerableMode = False
 
-        # move all the squirrels
-        for sObj in squirrelObjs:
-            # move the squirrel, and adjust for their bounce
+        # move all the geese
+        for sObj in gooseObjs:
+            # move the goose, and adjust for their bounce
             sObj['x'] += sObj['movex']
             sObj['y'] += sObj['movey']
             sObj['bounce'] += 1
@@ -156,15 +166,18 @@ def runGame():
         for i in range(len(grassObjs) - 1, -1, -1):
             if isOutsideActiveArea(camerax, cameray, grassObjs[i]):
                 del grassObjs[i]
-        for i in range(len(squirrelObjs) - 1, -1, -1):
-            if isOutsideActiveArea(camerax, cameray, squirrelObjs[i]):
-                del squirrelObjs[i]
+                #del poopObjs[i]
+        for i in range(len(gooseObjs) - 1, -1, -1):
+            if isOutsideActiveArea(camerax, cameray, gooseObjs[i]):
+                del gooseObjs[i]
+                #del poopObjs[i]
 
         # add more grass & squirrels if we don't have enough.
         while len(grassObjs) < NUMGRASS:
             grassObjs.append(makeNewGrass(camerax, cameray))
-        while len(squirrelObjs) < NUMGEESE:
-            squirrelObjs.append(makeNewSquirrel(camerax, cameray))
+        while len(gooseObjs) < NUMGEESE:
+            gooseObjs.append(makeNewSquirrel(camerax, cameray))
+        #while len(poopObjs) < 
 
         # adjust camerax and cameray if beyond the "camera slack"
         playerCenterx = playerObj['x'] + int(playerObj['size'] / 2)
@@ -191,7 +204,7 @@ def runGame():
 
 
         # draw the other squirrels
-        for sObj in squirrelObjs:
+        for sObj in gooseObjs:
             sObj['rect'] = pygame.Rect( (sObj['x'] - camerax,
                                          sObj['y'] - cameray - getBounceAmount(sObj['bounce'], sObj['bouncerate'], sObj['bounceheight']),
                                          sObj['width'],
@@ -208,6 +221,7 @@ def runGame():
                                               playerObj['size']) )
             DISPLAYSURF.blit(playerObj['surface'], playerObj['rect'])
 
+#draw poop objects here**
 
         # draw the health meter
         drawHealthMeter(playerObj['health'])
@@ -270,15 +284,15 @@ def runGame():
                 playerObj['bounce'] = 0 # reset bounce amount
 
             # check if the player has collided with any squirrels
-            for i in range(len(squirrelObjs)-1, -1, -1):
-                sqObj = squirrelObjs[i]
+            for i in range(len(gooseObjs)-1, -1, -1):
+                sqObj = gooseObjs[i]
                 if 'rect' in sqObj and playerObj['rect'].colliderect(sqObj['rect']):
                     # a player/squirrel collision has occurred
 
                     if sqObj['width'] * sqObj['height'] <= playerObj['size']**2:
                         # player is larger and eats the squirrel
                         playerObj['size'] += int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1
-                        del squirrelObjs[i]
+                        del gooseObjs[i]
 
                         if playerObj['facing'] == LEFT:
                             playerObj['surface'] = pygame.transform.scale(L_GOOSE_IMG, (playerObj['size'], playerObj['size']))
@@ -297,6 +311,12 @@ def runGame():
                         if playerObj['health'] == 0:
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
+                #if 'rect' in poObj and playerObj['rect'].colliderect(poObj['rect']):
+                    #
+
+        # add check for collision with poop and decrease speed
+
+
         else:
             # game is over, show "game over" text
             DISPLAYSURF.blit(gameOverSurf, gameOverRect)
@@ -381,6 +401,15 @@ def makeNewGrass(camerax, cameray):
     gr['x'], gr['y'] = getRandomOffCameraPos(camerax, cameray, gr['width'], gr['height'])
     gr['rect'] = pygame.Rect( (gr['x'], gr['y'], gr['width'], gr['height']) )
     return gr
+
+
+#def makeNewPoop(camerax, cameray):
+    #po ={}
+    #po['width']  = POOPIMAGE[0].get_width()
+    #po['height'] = POOPIMAGE[0].get_height()
+    #po['x'], po['y'] = getRandomOffCameraPos(camerax, cameray, po['width'], po['height'])
+    #po['rect'] = pygame.Rect( (po['x'], po['y'], po['width'], po['height']))
+    #return po
 
 
 def isOutsideActiveArea(camerax, cameray, obj):
