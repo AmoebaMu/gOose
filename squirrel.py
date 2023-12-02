@@ -267,23 +267,23 @@ def runGame():
                 playerObj['y'] += MOVERATE
 
             if (moveLeft or moveRight or moveUp or moveDown) or playerObj['bounce'] != 0: #ak- the playerObj['bounce'] part is what point of bouncing the player is, the bounce value 
-                playerObj['bounce'] += 1
+                playerObj['bounce'] += 1 #ak- if the player stops moving but the bounce hasn't finished, makes sure that the bounce still finishes
 
-            if playerObj['bounce'] > BOUNCERATE:
+            if playerObj['bounce'] > BOUNCERATE: #ak- makes sure that the bounce does not become larger than the bouncerate, keeps the bounce constant to the current rate
                 playerObj['bounce'] = 0 # reset bounce amount
 
             # check if the player has collided with any squirrels
-            for i in range(len(squirrelObjs)-1, -1, -1):
+            for i in range(len(squirrelObjs)-1, -1, -1): #ak- takes the list of squirrelObjs and starts at the last index, since a squirrel may or may not disappear when collisions happen
                 sqObj = squirrelObjs[i]
                 if 'rect' in sqObj and playerObj['rect'].colliderect(sqObj['rect']):
                     # a player/squirrel collision has occurred
 
-                    if sqObj['width'] * sqObj['height'] <= playerObj['size']**2:
+                    if sqObj['width'] * sqObj['height'] <= playerObj['size']**2: #ak- checks and compares the sizes of the player and the collided squirrel
                         # player is larger and eats the squirrel
-                        playerObj['size'] += int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1
+                        playerObj['size'] += int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1 #ak- increases the size of the player squirrel based on the smaller squirrel collided
                         del squirrelObjs[i]
 
-                        if playerObj['facing'] == LEFT:
+                        if playerObj['facing'] == LEFT: #ak- updates the size of the player image using the transform function in pygame, also accounts for direction facing
                             playerObj['surface'] = pygame.transform.scale(L_SQUIR_IMG, (playerObj['size'], playerObj['size']))
                         if playerObj['facing'] == RIGHT:
                             playerObj['surface'] = pygame.transform.scale(R_SQUIR_IMG, (playerObj['size'], playerObj['size']))
@@ -294,47 +294,48 @@ def runGame():
                     elif not invulnerableMode:
                         # player is smaller and takes damage
                         invulnerableMode = True
-                        invulnerableStartTime = time.time()
+                        invulnerableStartTime = time.time() #ak- starts the time for a short period of invulnerability 
                         playerObj['health'] -= 1
                         if playerObj['health'] == 0:
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
         else:
             # game is over, show "game over" text
-            DISPLAYSURF.blit(gameOverSurf, gameOverRect)
+            DISPLAYSURF.blit(gameOverSurf, gameOverRect) #ak- displays the game over text onto the surface created by the code
             if time.time() - gameOverStartTime > GAMEOVERTIME:
-                return # end the current game
+                return # end the current game #ak- after a certain period of time, the game will restart and continue running the code
 
         # check if the player has won.
         if winMode:
             DISPLAYSURF.blit(winSurf, winRect)
             DISPLAYSURF.blit(winSurf2, winRect2)
 
-        pygame.display.update()
-        FPSCLOCK.tick(FPS)
+        pygame.display.update() #ak- only updates a portion of the screen
+        FPSCLOCK.tick(FPS) #ak- tracks the time to update the screen
 
 
 
 def drawHealthMeter(currentHealth):
-    for i in range(currentHealth): # draw red health bars
-        pygame.draw.rect(DISPLAYSURF, RED,   (15, 5 + (10 * MAXHEALTH) - i * 10, 20, 10))
-    for i in range(MAXHEALTH): # draw the white outlines
+    for i in range(currentHealth): # draw red health bars #np- the for loop on line 317 draws the filled-in red rectangle for the amount of health the player has
+        pygame.draw.rect(DISPLAYSURF, RED,   (15, 5 + (10 * MAXHEALTH) - i * 10, 20, 10)) #np- display red rectangle on surface
+    for i in range(MAXHEALTH): # draw the white outlines #np- the for loop on line 319 draws an unfilled white rectangle for all of the possible health the player could have 
+        #np- (which is the integer value stored in the MAXHEALTH constant)
         pygame.draw.rect(DISPLAYSURF, WHITE, (15, 5 + (10 * MAXHEALTH) - i * 10, 20, 10), 1)
 
 
-def terminate(): # finishes the game, exit
+def terminate(): # finishes the game, exit #np- the python exit function # built-in method used to terminate a python script
     pygame.quit()
     sys.exit()
 
 
 def getBounceAmount(currentBounce, bounceRate, bounceHeight):
-    # Returns the number of pixels to offset based on the bounce.
-    # Larger bounceRate means a slower bounce.
-    # Larger bounceHeight means a higher bounce.
-    # currentBounce will always be less than bounceRate
+    #np- Returns the number of pixels to offset based on the bounce.
+    #np- Larger bounceRate means a slower bounce.
+    #np- Larger bounceHeight means a higher bounce.
+    #np- currentBounce will always be less than bounceRate
     return int(math.sin( (math.pi / float(bounceRate)) * currentBounce ) * bounceHeight)
 
-def getRandomVelocity(): # randomly determine how fast an enemy squirrel will move # 50/50 chance that speed will be positive or negative
+def getRandomVelocity(): #np- randomly determine how fast an enemy squirrel will move - 50/50 chance that speed will be positive or negative, speed is either negative or positive
     speed = random.randint(SQUIRRELMINSPEED, SQUIRRELMAXSPEED)
     if random.randint(0, 1) == 0:
         return speed
@@ -346,10 +347,11 @@ def getRandomOffCameraPos(camerax, cameray, objWidth, objHeight):
     # create a Rect of the camera view
     cameraRect = pygame.Rect(camerax, cameray, WINWIDTH, WINHEIGHT)
     while True:
-        x = random.randint(camerax - WINWIDTH, camerax + (2 * WINWIDTH)) # creating rectangle of camera view
-        y = random.randint(cameray - WINHEIGHT, cameray + (2 * WINHEIGHT)) # creating rectangle of camera view
-        # create a Rect object with the random coordinates and use colliderect()
-        # to make sure the right edge isn't in the camera view.
+        x = random.randint(camerax - WINWIDTH, camerax + (2 * WINWIDTH)) #np- creating rectangle of camera view
+        y = random.randint(cameray - WINHEIGHT, cameray + (2 * WINHEIGHT)) #np- creating rectangle of camera view
+        #np- create a Rect object with the random coordinates and use colliderect()
+        #np- to make sure the right edge isn't in the camera view.
+        #np- check if the random XY coordinates would collide with the camera view’s Rect object
         objRect = pygame.Rect(x, y, objWidth, objHeight)
         if not objRect.colliderect(cameraRect):
             return x, y
@@ -359,7 +361,7 @@ def makeNewSquirrel(camerax, cameray):
     sq = {}
     generalSize = random.randint(5, 25)
     multiplier = random.randint(1, 3)
-    sq['width']  = (generalSize + random.randint(0, 10)) * multiplier # width and height are set to random sizes to have variety
+    sq['width']  = (generalSize + random.randint(0, 10)) * multiplier #np- width and height are set to random sizes to have variety
     sq['height'] = (generalSize + random.randint(0, 10)) * multiplier
     sq['x'], sq['y'] = getRandomOffCameraPos(camerax, cameray, sq['width'], sq['height'])
     sq['movex'] = getRandomVelocity()

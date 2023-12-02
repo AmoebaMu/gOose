@@ -1,7 +1,4 @@
-# Squirrel Eat Squirrel (a 2D Katamari Damacy clone)
-# By Al Sweigart al@inventwithpython.com
-# http://inventwithpython.com/pygame
-# Released under a "Simplified BSD" license
+# rukia's comments
 
 import random, sys, time, math, pygame
 from pygame.locals import *
