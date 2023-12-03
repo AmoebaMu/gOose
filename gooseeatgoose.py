@@ -30,7 +30,7 @@ MAXHEALTH = 3        # how much health the player starts with
 
 NUMGRASS = 80    # number of grass objects in the active area
 NUMGEESE = 30    # number of squirrels in the active area
-#NUMPOOP = 20    # number of poop objects in the active area
+NUMPOOP = 10    # number of poop objects in the active area
 #NUMLAKE =       # number of lake objects in the active area when camera is panned to it?? # idk how it's gonna work with this
 GOOSEMINSPEED = 3 # slowest squirrel speed
 GOOSEMAXSPEED = 7 # fastest squirrel speed
@@ -65,7 +65,7 @@ Grass data structure keys:
 """
 
 def main():
-    global FPSCLOCK, DISPLAYSURF, BASICFONT, L_GOOSE_IMG, R_GOOSE_IMG, GRASSIMAGES
+    global FPSCLOCK, DISPLAYSURF, BASICFONT, L_GOOSE_IMG, R_GOOSE_IMG, GRASSIMAGES, POOPIMAGES, LAKEIMAGES
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
@@ -78,6 +78,7 @@ def main():
     L_GOOSE_IMG = pygame.image.load('gooseimg.png')
     R_GOOSE_IMG = pygame.transform.flip(L_GOOSE_IMG, True, False)
     GRASSIMAGES = []
+    POOPIMAGES = pygame.image.load('goosepoop.png')
     LAKEIMAGES = []
     for i in range(1, 5):
         GRASSIMAGES.append(pygame.image.load('grass%s.png' % i))
@@ -115,6 +116,7 @@ def runGame():
 
     grassObjs = []    # stores all the grass objects in the game
     gooseObjs = [] # stores all the non-player goose objects
+    poopObjs = []
     lakeObjs = [] # stores all the lake objects in the game
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
@@ -137,10 +139,10 @@ def runGame():
         grassObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
     #random poop
-    #for i in range(5):
-        #poopObjs.append(makeNewPoop(camerax, cameray))
-        #poopObjs[i]['x'] = random.randint(0, WINWIDTH)
-        #poopObjs[i]['y'] = random.randint(0, WINHEIGHT)
+    for i in range(5):
+        poopObjs.append(makeNewPoop(camerax, cameray))
+        poopObjs[i]['x'] = random.randint(0, WINWIDTH)
+        poopObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
     while True: # main game loop
         # check if we should turn off invulnerability
@@ -181,7 +183,9 @@ def runGame():
             grassObjs.append(makeNewGrass(camerax, cameray))
         while len(gooseObjs) < NUMGEESE:
             gooseObjs.append(makeNewSquirrel(camerax, cameray))
-        #while len(poopObjs) < 
+        while len(poopObjs) < NUMGRASS:
+            poopObjs.append(makeNewPoop(camerax, cameray))
+
 
         # adjust camerax and cameray if beyond the "camera slack"
         playerCenterx = playerObj['x'] + int(playerObj['size'] / 2)
@@ -205,6 +209,15 @@ def runGame():
                                   gObj['width'],
                                   gObj['height']) )
             DISPLAYSURF.blit(GRASSIMAGES[gObj['grassImage']], gRect)
+
+        # draw all the poop objects on the screen
+        for pObj in poopObjs:
+            pObj['rect'] = pygame.Rect( (pObj['x'] - camerax,
+                                        pObj['y'] - cameray,
+                                        pObj['width'],
+                                        pObj['height']))
+            DISPLAYSURF.blit(POOPIMAGES, pObj['rect'])
+
 
         # draw all the lake objects on the screen 
         # for lObj in lakeObjs:
@@ -233,7 +246,7 @@ def runGame():
                                               playerObj['size']) )
             DISPLAYSURF.blit(playerObj['surface'], playerObj['rect'])
 
-#draw poop objects here**
+
 
         # draw the health meter
         drawHealthMeter(playerObj['health'])
@@ -412,13 +425,13 @@ def makeNewGrass(camerax, cameray):
     gr['rect'] = pygame.Rect( (gr['x'], gr['y'], gr['width'], gr['height']) )
     return gr
 
-#def makeNewPoop(camerax, cameray):
-    #po ={}
-    #po['width']  = POOPIMAGE[0].get_width()
-    #po['height'] = POOPIMAGE[0].get_height()
-    #po['x'], po['y'] = getRandomOffCameraPos(camerax, cameray, po['width'], po['height'])
-    #po['rect'] = pygame.Rect( (po['x'], po['y'], po['width'], po['height']))
-    #return po
+def makeNewPoop(camerax, cameray):
+    po ={}
+    po['width']  = POOPIMAGES.get_width()
+    po['height'] = POOPIMAGES.get_height()
+    po['x'], po['y'] = getRandomOffCameraPos(camerax, cameray, po['width'], po['height'])
+    po['rect'] = pygame.Rect( (po['x'], po['y'], po['width'], po['height']))
+    return po
 
 def isOutsideActiveArea(camerax, cameray, obj):
     # Return False if camerax and cameray are more than
