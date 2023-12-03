@@ -15,6 +15,7 @@ HALF_WINHEIGHT = int(WINHEIGHT / 2)
 GRASSCOLOR = (24, 255, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
+BLUE = (0,0,255)
 
 CAMERASLACK = 90     # how far from the center the squirrel moves before moving the camera
 MOVERATE = 9         # how fast the player moves
@@ -27,9 +28,10 @@ INVULNTIME = 2       # how long the player is invulnerable after being hit in se
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
 MAXHEALTH = 3        # how much health the player starts with
 
-NUMGRASS = 80        # number of grass objects in the active area
+NUMGRASS = 80    # number of grass objects in the active area
 NUMGEESE = 30    # number of squirrels in the active area
-#NUMPOOP = 20
+#NUMPOOP = 20    # number of poop objects in the active area
+#NUMLAKE =       # number of lake objects in the active area when camera is panned to it?? # idk how it's gonna work with this
 GOOSEMINSPEED = 3 # slowest squirrel speed
 GOOSEMAXSPEED = 7 # fastest squirrel speed
 DIRCHANGEFREQ = 2    # % chance of direction change per frame
@@ -76,6 +78,7 @@ def main():
     L_GOOSE_IMG = pygame.image.load('gooseimg.png')
     R_GOOSE_IMG = pygame.transform.flip(L_GOOSE_IMG, True, False)
     GRASSIMAGES = []
+    LAKEIMAGES = []
     for i in range(1, 5):
         GRASSIMAGES.append(pygame.image.load('grass%s.png' % i))
 
@@ -112,6 +115,7 @@ def runGame():
 
     grassObjs = []    # stores all the grass objects in the game
     gooseObjs = [] # stores all the non-player goose objects
+    lakeObjs = [] # stores all the lake objects in the game
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
                  'facing': LEFT,
@@ -139,7 +143,7 @@ def runGame():
         #poopObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
     while True: # main game loop
-        # Check if we should turn off invulnerability
+        # check if we should turn off invulnerability
         if invulnerableMode and time.time() - invulnerableStartTime > INVULNTIME:
             invulnerableMode = False
 
@@ -202,7 +206,15 @@ def runGame():
                                   gObj['height']) )
             DISPLAYSURF.blit(GRASSIMAGES[gObj['grassImage']], gRect)
 
-
+        # draw all the lake objects on the screen 
+        # for lObj in lakeObjs:
+        #    lRect = pygame.Rect( (lObj['x'] - camerax,
+        #                          lObj['y'] - cameray,
+        #                          lObj['width'],
+        #                          lObj['height']) )
+        #    DISPLAYSURF.blit(LAKEIMAGES[lObj['lakeImage']],gRect) # i'm guessing we may need a lake png/jpg here 
+            
+        
         # draw the other squirrels
         for sObj in gooseObjs:
             sObj['rect'] = pygame.Rect( (sObj['x'] - camerax,
@@ -332,8 +344,6 @@ def runGame():
         FPSCLOCK.tick(FPS)
 
 
-
-
 def drawHealthMeter(currentHealth):
     for i in range(currentHealth): # draw red health bars
         pygame.draw.rect(DISPLAYSURF, RED,   (15, 5 + (10 * MAXHEALTH) - i * 10, 20, 10))
@@ -402,7 +412,6 @@ def makeNewGrass(camerax, cameray):
     gr['rect'] = pygame.Rect( (gr['x'], gr['y'], gr['width'], gr['height']) )
     return gr
 
-
 #def makeNewPoop(camerax, cameray):
     #po ={}
     #po['width']  = POOPIMAGE[0].get_width()
@@ -410,7 +419,6 @@ def makeNewGrass(camerax, cameray):
     #po['x'], po['y'] = getRandomOffCameraPos(camerax, cameray, po['width'], po['height'])
     #po['rect'] = pygame.Rect( (po['x'], po['y'], po['width'], po['height']))
     #return po
-
 
 def isOutsideActiveArea(camerax, cameray, obj):
     # Return False if camerax and cameray are more than
