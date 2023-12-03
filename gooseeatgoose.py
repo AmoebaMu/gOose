@@ -335,17 +335,16 @@ def runGame():
                         invulnerableMode = True
                         invulnerableStartTime = time.time()
                         playerObj['health'] -= 1
-                        playerObj['size'] -= int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1
+                        playerObj['size'] -= int( (sqObj['width'] * sqObj['height'])**0.2 ) + 1.5                       
                         if playerObj['health'] == 0:
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
                 
-                #if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
-                    #if not slowMode:
-                        #slowMode = True
-                        #slowModeTime = time.time()
-                        #BOUNCERATE += 4
-                        #BOUNCEHEIGHT -= 5
+            #if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
+                #if not slowMode:
+                    #slowMode = True
+                    #slowModeTime = time.time()
+                    
 
         
 
