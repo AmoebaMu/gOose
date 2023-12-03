@@ -31,7 +31,7 @@ MAXHEALTH = 3        # how much health the player starts with
 NUMGRASS = 80    # number of grass objects in the active area
 NUMGEESE = 30    # number of geese in the active area
 NUMPOOP = 3    # number of poop objects in the active area
-#NUMLAKE =       # number of lake objects in the active area when camera is panned to it?? # idk how it's gonna work with this
+NUMTOOL = 2      # number of badge objects in the active area
 GOOSEMINSPEED = 3 # slowest goose speed
 GOOSEMAXSPEED = 7 # fastest goose speed
 DIRCHANGEFREQ = 2    # % chance of direction change per frame
@@ -79,7 +79,7 @@ def main():
     R_GOOSE_IMG = pygame.transform.flip(L_GOOSE_IMG, True, False)
     GRASSIMAGES = []
     POOPIMAGES = pygame.image.load('goosepoop.png')
-    LAKEIMAGES = []
+    TOOLIMAGES = [pygame.image.load('')]
     for i in range(1, 5):
         GRASSIMAGES.append(pygame.image.load('grass%s.png' % i))
 
@@ -117,7 +117,7 @@ def runGame():
     grassObjs = []    # stores all the grass objects in the game
     gooseObjs = [] # stores all the non-player goose objects
     poopObjs = []
-    #lakeObjs = [] # stores all the lake objects in the game
+    badgeObjs = [] # stores all the badge objects in the game
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
                  'facing': LEFT,
@@ -143,6 +143,11 @@ def runGame():
         poopObjs.append(makeNewPoop(camerax, cameray))
         poopObjs[i]['x'] = random.randint(0, WINWIDTH)
         poopObjs[i]['y'] = random.randint(0, WINHEIGHT)
+
+    for i in range(2):
+        toolObjs.append(makeNewTool(camerax, cameray))
+        toolObjs[i]['x'] = random.randint(0, WINWIDTH)
+        toolObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
     while True: # main game loop
         # check if we should turn off invulnerability
@@ -188,6 +193,8 @@ def runGame():
             gooseObjs.append(makeNewSquirrel(camerax, cameray))
         while len(poopObjs) < NUMGRASS:
             poopObjs.append(makeNewPoop(camerax, cameray))
+        while len(toolObjs) < NUMTOOL:
+            toolObjs.append(makeNewTool(camerax, cameray))
 
 
         # adjust camerax and cameray if beyond the "camera slack"
@@ -219,17 +226,15 @@ def runGame():
                                         pObj['y'] - cameray,
                                         pObj['width'],
                                         pObj['height']))
-            DISPLAYSURF.blit(POOPIMAGES, pObj['rect'])
-
-
-        # draw all the lake objects on the screen 
-        # for lObj in lakeObjs:
-        #    lRect = pygame.Rect( (lObj['x'] - camerax,
-        #                          lObj['y'] - cameray,
-        #                          lObj['width'],
-        #                          lObj['height']) )
-        #    DISPLAYSURF.blit(LAKEIMAGES[lObj['lakeImage']],gRect) # i'm guessing we may need a lake png/jpg here 
-            
+            DISPLAYSURF.blit(POOPIMAGES, pObj['rect']) 
+       
+        # draw all the tool objects on the screen 
+        for tObj in toolObjs:
+            tObj['rect'] = pygame.Rect( (tObj)['x'] - camerax,
+                                        tObj['y'] - cameray,
+                                        tObj['width'],
+                                        tObj['height']))
+            DISPLAYSURF.blit(TOOLIMAGES, tObj['rect'])
         
         # draw the other squirrels
         for sObj in gooseObjs:
@@ -316,6 +321,10 @@ def runGame():
                 sqObj = gooseObjs[i]
                 if 'rect' in sqObj and playerObj['rect'].colliderect(sqObj['rect']):
                     # a player/squirrel collision has occurred
+
+            # check if the player has collided with any tools
+            # delete tool after collision
+            # for now: turn on winmode if collision
 
                     if sqObj['width'] * sqObj['height'] <= playerObj['size']**2:
                         # player is larger and eats the squirrel
@@ -439,6 +448,8 @@ def makeNewPoop(camerax, cameray):
     po['x'], po['y'] = getRandomOffCameraPos(camerax, cameray, po['width'], po['height'])
     po['rect'] = pygame.Rect( (po['x'], po['y'], po['width'], po['height']))
     return po
+
+# maybe makeNewTool
 
 def isOutsideActiveArea(camerax, cameray, obj):
     # Return False if camerax and cameray are more than
