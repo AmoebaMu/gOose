@@ -24,16 +24,16 @@ BOUNCEHEIGHT = 30    # how high the player bounces
 STARTSIZE = 40       # how big the player starts off
 WINSIZE = 600        # how big the player needs to be to win
 INVULNTIME = 2       # how long the player is invulnerable after being hit in seconds
-#SLOWTIME = 4
+SLOWTIME = 4
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
 MAXHEALTH = 3        # how much health the player starts with
 
 NUMGRASS = 80    # number of grass objects in the active area
-NUMGEESE = 30    # number of squirrels in the active area
-NUMPOOP = 10    # number of poop objects in the active area
+NUMGEESE = 30    # number of geese in the active area
+NUMPOOP = 3    # number of poop objects in the active area
 #NUMLAKE =       # number of lake objects in the active area when camera is panned to it?? # idk how it's gonna work with this
-GOOSEMINSPEED = 3 # slowest squirrel speed
-GOOSEMAXSPEED = 7 # fastest squirrel speed
+GOOSEMINSPEED = 3 # slowest goose speed
+GOOSEMAXSPEED = 7 # fastest goose speed
 DIRCHANGEFREQ = 2    # % chance of direction change per frame
 LEFT = 'left'
 RIGHT = 'right'
@@ -94,8 +94,8 @@ def runGame():
     gameOverMode = False      # if the player has lost
     gameOverStartTime = 0     # time the player lost
     winMode = False           # if the player has won
-    #slowMode = False
-    #slowMode = 0
+    slowMode = False
+    slowModeTime = 0
 
     # create the surfaces to hold game text
     gameOverSurf = BASICFONT.render('Game Over', True, WHITE)
@@ -117,7 +117,7 @@ def runGame():
     grassObjs = []    # stores all the grass objects in the game
     gooseObjs = [] # stores all the non-player goose objects
     poopObjs = []
-    lakeObjs = [] # stores all the lake objects in the game
+    #lakeObjs = [] # stores all the lake objects in the game
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
                  'facing': LEFT,
@@ -148,6 +148,9 @@ def runGame():
         # check if we should turn off invulnerability
         if invulnerableMode and time.time() - invulnerableStartTime > INVULNTIME:
             invulnerableMode = False
+
+        if slowMode and time.time() - slowModeTime > SLOWTIME:
+            slowMode = False
 
         # move all the geese
         for sObj in gooseObjs:
@@ -336,10 +339,15 @@ def runGame():
                         if playerObj['health'] == 0:
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
-                #if 'rect' in poObj and playerObj['rect'].colliderect(poObj['rect']):
-                    #
+                
+                #if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
+                    #if not slowMode:
+                        #slowMode = True
+                        #slowModeTime = time.time()
+                        #BOUNCERATE += 4
+                        #BOUNCEHEIGHT -= 5
 
-        # add check for collision with poop and decrease speed
+        
 
 
         else:
