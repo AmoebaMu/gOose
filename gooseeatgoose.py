@@ -23,7 +23,6 @@ BOUNCEHEIGHT = 30    # how high the player bounces
 STARTSIZE = 40       # how big the player starts off
 WINSIZE = 600        # how big the player needs to be to win
 INVULNTIME = 2       # how long the player is invulnerable after being hit in seconds
-SLOWTIME = 4
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
 MAXHEALTH = 3        # how much health the player starts with
 
@@ -93,8 +92,6 @@ def runGame():
     gameOverMode = False      # if the player has lost
     gameOverStartTime = 0     # time the player lost
     winMode = False           # if the player has won
-    slowMode = False
-    #slowModeTime = 0
 
     # create the surfaces to hold game text
     gameOverSurf = BASICFONT.render('Game Over', True, WHITE)
@@ -116,7 +113,7 @@ def runGame():
     grassObjs = []    # stores all the grass objects in the game
     gooseObjs = [] # stores all the non-player goose objects
     poopObjs = [] # stores all the poop objects in the game
-    toolObjs = [] # stores all the tool objects in the game
+    #toolObjs = [] # stores all the tool objects in the game
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
                  'facing': LEFT,
@@ -178,7 +175,7 @@ def runGame():
         for i in range(len(grassObjs) - 1, -1, -1):
             if isOutsideActiveArea(camerax, cameray, grassObjs[i]):
                 del grassObjs[i]
-                #wdel poopObjs[i]
+                #del poopObjs[i]
         for i in range(len(gooseObjs) - 1, -1, -1):
             if isOutsideActiveArea(camerax, cameray, gooseObjs[i]):
                 del gooseObjs[i]
@@ -221,9 +218,9 @@ def runGame():
         # draw all the poop objects on the screen
         for pObj in poopObjs:
             pObj['rect'] = pygame.Rect( (pObj['x'] - camerax,
-                                        pObj['y'] - cameray,
-                                        pObj['width'],
-                                        pObj['height']))
+                                         pObj['y'] - cameray,
+                                         pObj['width'],
+                                         pObj['height']))
             DISPLAYSURF.blit(POOPIMAGES, pObj['rect']) 
        
         # draw all the tool objects on the screen 
@@ -344,7 +341,7 @@ def runGame():
             for i in range(len(poopObjs)-1, -1, -1):
                 pObj = poopObjs[i]
                 if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
-                    playerObj['size'] -= 0.2
+                    playerObj['size'] -= 0.5
                     del poopObjs[i] 
             # check if the player has collided with any tools
             #for i in range(len(toolObjs)-1, -1, -1):
