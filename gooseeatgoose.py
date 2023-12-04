@@ -15,7 +15,6 @@ HALF_WINHEIGHT = int(WINHEIGHT / 2)
 GRASSCOLOR = (24, 255, 0)
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
-BLUE = (0,0,255)
 
 CAMERASLACK = 90     # how far from the center the squirrel moves before moving the camera
 MOVERATE = 9         # how fast the player moves
@@ -79,7 +78,7 @@ def main():
     R_GOOSE_IMG = pygame.transform.flip(L_GOOSE_IMG, True, False)
     GRASSIMAGES = []
     POOPIMAGES = pygame.image.load('goosepoop.png')
-    TOOLIMAGES = [pygame.image.load('')]
+    TOOLIMAGES = [pygame.image.load('tool.png')]
     for i in range(1, 5):
         GRASSIMAGES.append(pygame.image.load('grass%s.png' % i))
 
@@ -116,8 +115,8 @@ def runGame():
 
     grassObjs = []    # stores all the grass objects in the game
     gooseObjs = [] # stores all the non-player goose objects
-    poopObjs = []
-    badgeObjs = [] # stores all the badge objects in the game
+    poopObjs = [] # stores all the poop objects in the game
+    toolObjs = [] # stores all the tool objects in the game
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
                  'facing': LEFT,
@@ -143,7 +142,8 @@ def runGame():
         poopObjs.append(makeNewPoop(camerax, cameray))
         poopObjs[i]['x'] = random.randint(0, WINWIDTH)
         poopObjs[i]['y'] = random.randint(0, WINHEIGHT)
-
+    
+    # random and rare tool objects
     for i in range(2):
         toolObjs.append(makeNewTool(camerax, cameray))
         toolObjs[i]['x'] = random.randint(0, WINWIDTH)
@@ -323,8 +323,13 @@ def runGame():
                     # a player/squirrel collision has occurred
 
             # check if the player has collided with any tools
-            # delete tool after collision
-            # for now: turn on winmode if collision
+            for i in range(len(gooseObjs)-1, -1, -1):
+                sqObj = toolObjs[i]
+                if 'rect' in toolObj and sqObj['rect'].colliderect(toolObj['rect']):
+            # delete tool after collision: needed if not using winmode. not needed if using winmode
+            # increase size to winmode size
+                    if playerObj['size'] > WINSIZE:
+                        winMode = True 
 
                     if sqObj['width'] * sqObj['height'] <= playerObj['size']**2:
                         # player is larger and eats the squirrel
