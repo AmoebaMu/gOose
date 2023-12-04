@@ -113,7 +113,8 @@ def runGame():
     grassObjs = []    # stores all the grass objects in the game
     gooseObjs = [] # stores all the non-player goose objects
     poopObjs = [] # stores all the poop objects in the game
-    #toolObjs = [] # stores all the tool objects in the game
+    toolObjs = [] # stores all the tool objects in the game
+    
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
                  'facing': LEFT,
@@ -134,17 +135,17 @@ def runGame():
         grassObjs[i]['x'] = random.randint(0, WINWIDTH)
         grassObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
-    #random poop
-    for i in range(5):
+    #random poop on the screen
+    for i in range(4):
         poopObjs.append(makeNewPoop(camerax, cameray))
         poopObjs[i]['x'] = random.randint(0, WINWIDTH)
         poopObjs[i]['y'] = random.randint(0, WINHEIGHT)
     
     # random and rare tool objects
-    #for i in range(2):
-        #toolObjs.append(makeNewTool(camerax, cameray))
-        #toolObjs[i]['x'] = random.randint(0, WINWIDTH)
-        #toolObjs[i]['y'] = random.randint(0, WINHEIGHT)
+    for i in range(2):
+        toolObjs.append(makeNewTool(camerax, cameray))
+        toolObjs[i]['x'] = random.randint(0, WINWIDTH)
+        toolObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
     while True: # main game loop
         # check if we should turn off invulnerability
@@ -174,12 +175,15 @@ def runGame():
         # go through all the objects and see if any need to be deleted.
         for i in range(len(grassObjs) - 1, -1, -1):
             if isOutsideActiveArea(camerax, cameray, grassObjs[i]):
-                del grassObjs[i]
-                #del poopObjs[i]
+                del grassObjs[i] 
         for i in range(len(gooseObjs) - 1, -1, -1):
             if isOutsideActiveArea(camerax, cameray, gooseObjs[i]):
                 del gooseObjs[i]
-                #del poopObjs[i]
+        for i in range(len(poopObjs) - 1, -1, -1):
+            if isOutsideActiveArea(camerax, cameray, poopObjs[i]):
+                del poopObjs[i]
+
+            
 
         # add more grass & squirrels if we don't have enough.
         while len(grassObjs) < NUMGRASS:
@@ -188,8 +192,8 @@ def runGame():
             gooseObjs.append(makeNewSquirrel(camerax, cameray))
         while len(poopObjs) < NUMGRASS:
             poopObjs.append(makeNewPoop(camerax, cameray))
-        #while len(toolObjs) < NUMTOOL:
-            #toolObjs.append(makeNewTool(camerax, cameray))
+        while len(toolObjs) < NUMTOOL:
+            toolObjs.append(makeNewTool(camerax, cameray))
 
 
         # adjust camerax and cameray if beyond the "camera slack"
@@ -217,19 +221,19 @@ def runGame():
 
         # draw all the poop objects on the screen
         for pObj in poopObjs:
-            pObj['rect'] = pygame.Rect( (pObj['x'] - camerax,
-                                         pObj['y'] - cameray,
-                                         pObj['width'],
-                                         pObj['height']))
-            DISPLAYSURF.blit(POOPIMAGES, pObj['rect']) 
+            pRect = pygame.Rect( (pObj['x'] - camerax,
+                                  pObj['y'] - cameray,
+                                  pObj['width'],
+                                  pObj['height']))
+            DISPLAYSURF.blit(POOPIMAGES, pRect) 
        
         # draw all the tool objects on the screen 
-        #for tObj in toolObjs:
-            #tObj['rect'] = pygame.Rect( (tObj['x'] - camerax,
-                                        #tObj['y'] - cameray,
-                                        #tObj['width'],
-                                        #tObj['height']))
-            #DISPLAYSURF.blit(TOOLIMAGE, tObj['rect'])
+        for tObj in toolObjs:
+            tObj['rect'] = pygame.Rect( (tObj['x'] - camerax,
+                                         tObj['y'] - cameray,
+                                         tObj['width'],
+                                         tObj['height']))
+            DISPLAYSURF.blit(TOOLIMAGE, tObj['rect'])
         
         # draw the other squirrels
         for sObj in gooseObjs:
@@ -343,6 +347,7 @@ def runGame():
                 if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
                     playerObj['size'] -= 0.5
                     del poopObjs[i] 
+            
             # check if the player has collided with any tools
             #for i in range(len(toolObjs)-1, -1, -1):
                 #toObj = toolObjs[i]
@@ -356,8 +361,6 @@ def runGame():
                     
             
             
-                    
-
         
         else:
             # game is over, show "game over" text
@@ -450,12 +453,13 @@ def makeNewPoop(camerax, cameray):
     po['rect'] = pygame.Rect( (po['x'], po['y'], po['width'], po['height']))
     return po
 
-#def makeNewTool(camerax, cameray):
-    #to = {}
-    #to['width'] = TOOLIMAGE.get_width()
-    #to['height'] = TOOLIMAGE.get_height()
-    #to['x'], to['y'] = getRandomOffCameraPos(camerax, cameray, to['width'], to['height'])
-    #to['rect'] = pygame.Rect( (to['x'], to['y'], to['width'], to['height']))
+def makeNewTool(camerax, cameray):
+    to = {}
+    to['width'] = TOOLIMAGE.get_width()
+    to['height'] = TOOLIMAGE.get_height()
+    to['x'], to['y'] = getRandomOffCameraPos(camerax, cameray, to['width'], to['height'])
+    to['rect'] = pygame.Rect( (to['x'], to['y'], to['width'], to['height']))
+    return to
 
 def isOutsideActiveArea(camerax, cameray, obj):
     # Return False if camerax and cameray are more than
