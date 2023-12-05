@@ -1,7 +1,6 @@
-# Squirrel Eat Squirrel (a 2D Katamari Damacy clone)
-# By Al Sweigart al@inventwithpython.com
-# http://inventwithpython.com/pygame
-# Released under a "Simplified BSD" license
+# GOOSE EAT GOOSE
+# based on SQUIRREL EAT SQUIRREL 
+# by Rukia Beduni, Amy Kusnandar, Nashrah Purnita
 
 import random, sys, time, math, pygame
 from pygame.locals import *
@@ -20,16 +19,16 @@ CAMERASLACK = 90     # how far from the center the squirrel moves before moving 
 MOVERATE = 9         # how fast the player moves
 BOUNCERATE = 6       # how fast the player bounces (large is slower)
 BOUNCEHEIGHT = 30    # how high the player bounces
-STARTSIZE = 40       # how big the player starts off
-WINSIZE = 600        # how big the player needs to be to win
+STARTSIZE = 30       # how big the player starts off
+WINSIZE = 500        # how big the player needs to be to win
 INVULNTIME = 2       # how long the player is invulnerable after being hit in seconds
 GAMEOVERTIME = 4     # how long the "game over" text stays on the screen in seconds
 MAXHEALTH = 3        # how much health the player starts with
 
 NUMGRASS = 80    # number of grass objects in the active area
-NUMGEESE = 30    # number of geese in the active area
-NUMPOOP = 3    # number of poop objects in the active area
-NUMTOOL = 2      # number of badge objects in the active area
+NUMGEESE = 27    # number of geese in the active area
+NUMPOOP = 5      # number of poop objects in the active area
+NUMTOOL = 2      # number of tool objects in the active area
 GOOSEMINSPEED = 3 # slowest goose speed
 GOOSEMAXSPEED = 7 # fastest goose speed
 DIRCHANGEFREQ = 2    # % chance of direction change per frame
@@ -98,22 +97,26 @@ def runGame():
     gameOverRect = gameOverSurf.get_rect()
     gameOverRect.center = (HALF_WINWIDTH, HALF_WINHEIGHT)
 
-    winSurf = BASICFONT.render('You have achieved ULTIMATE UWATERLOO GOOSE!', True, WHITE)
+    winSurf = BASICFONT.render('You have achieved', True, WHITE)
     winRect = winSurf.get_rect()
     winRect.center = (HALF_WINWIDTH, HALF_WINHEIGHT)
 
-    winSurf2 = BASICFONT.render('(Press "r" to restart.)', True, WHITE)
+    winSurf2 = BASICFONT.render('ULTIMATE UWATERLOO GOOSE!', True, WHITE)
     winRect2 = winSurf2.get_rect()
     winRect2.center = (HALF_WINWIDTH, HALF_WINHEIGHT + 30)
+
+    winSurf3 = BASICFONT.render('(Press "r" to restart.)', True, WHITE)
+    winRect3 = winSurf3.get_rect()
+    winRect3.center = (HALF_WINWIDTH, HALF_WINHEIGHT + 60)
 
     # camerax and cameray are the top left of where the camera view is
     camerax = 0
     cameray = 0
 
     grassObjs = []    # stores all the grass objects in the game
-    gooseObjs = [] # stores all the non-player goose objects
-    poopObjs = [] # stores all the poop objects in the game
-    toolObjs = [] # stores all the tool objects in the game
+    gooseObjs = []    # stores all the non-player goose objects
+    poopObjs = []     # stores all the poop objects in the game
+    toolObjs = []     # stores all the tool objects in the game
     
     # stores the player object:
     playerObj = {'surface': pygame.transform.scale(L_GOOSE_IMG, (STARTSIZE, STARTSIZE)),
@@ -135,7 +138,7 @@ def runGame():
         grassObjs[i]['x'] = random.randint(0, WINWIDTH)
         grassObjs[i]['y'] = random.randint(0, WINHEIGHT)
 
-    #random poop on the screen
+    # random poop on the screen
     for i in range(4):
         poopObjs.append(makeNewPoop(camerax, cameray))
         poopObjs[i]['x'] = random.randint(0, WINWIDTH)
@@ -189,8 +192,8 @@ def runGame():
         while len(grassObjs) < NUMGRASS:
             grassObjs.append(makeNewGrass(camerax, cameray))
         while len(gooseObjs) < NUMGEESE:
-            gooseObjs.append(makeNewSquirrel(camerax, cameray))
-        while len(poopObjs) < NUMGRASS:
+            gooseObjs.append(makeNewGoose(camerax, cameray))
+        while len(poopObjs) < NUMPOOP:
             poopObjs.append(makeNewPoop(camerax, cameray))
         while len(toolObjs) < NUMTOOL:
             toolObjs.append(makeNewTool(camerax, cameray))
@@ -221,11 +224,11 @@ def runGame():
 
         # draw all the poop objects on the screen
         for pObj in poopObjs:
-            pRect = pygame.Rect( (pObj['x'] - camerax,
-                                  pObj['y'] - cameray,
-                                  pObj['width'],
-                                  pObj['height']))
-            DISPLAYSURF.blit(POOPIMAGES, pRect) 
+            pObj['rect'] = pygame.Rect( (pObj['x'] - camerax,
+                                         pObj['y'] - cameray,
+                                         pObj['width'],
+                                         pObj['height']))
+            DISPLAYSURF.blit(POOPIMAGES, pObj['rect']) 
        
         # draw all the tool objects on the screen 
         for tObj in toolObjs:
@@ -342,22 +345,21 @@ def runGame():
                             gameOverMode = True # turn on "game over mode"
                             gameOverStartTime = time.time()
             
+            # check if the player has collided with poop
             for i in range(len(poopObjs)-1, -1, -1):
                 pObj = poopObjs[i]
                 if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
-                    playerObj['size'] -= 0.5
+                    playerObj['size'] -= 0.7
                     del poopObjs[i] 
             
             # check if the player has collided with any tools
-            #for i in range(len(toolObjs)-1, -1, -1):
-                #toObj = toolObjs[i]
-                #if 'rect' in toObj and playerObj['rect'].colliderect(toObj['rect']):
-                    #playerObj['size'] += 100
-                    #del toolObjs[i]
-                    #if playerObj['size'] > WINSIZE:
-                        #winMode = True 
-            # delete tool after collision: needed if not using winmode. not needed if using winmode
-            # increase size to winmode size
+            for i in range(len(toolObjs)-1, -1, -1):
+                toObj = toolObjs[i]
+                if 'rect' in toObj and playerObj['rect'].colliderect(toObj['rect']):
+                    playerObj['size'] += 20
+                    del toolObjs[i]
+                    if playerObj['size'] > WINSIZE:
+                        winMode = True 
                     
             
             
@@ -372,6 +374,7 @@ def runGame():
         if winMode:
             DISPLAYSURF.blit(winSurf, winRect)
             DISPLAYSURF.blit(winSurf2, winRect2)
+            DISPLAYSURF.blit(winSurf3, winRect3)
 
         pygame.display.update()
         FPSCLOCK.tick(FPS)
@@ -417,10 +420,10 @@ def getRandomOffCameraPos(camerax, cameray, objWidth, objHeight):
             return x, y
 
 
-def makeNewSquirrel(camerax, cameray):
+def makeNewGoose(camerax, cameray):
     sq = {}
-    generalSize = random.randint(5, 40)
-    multiplier = random.randint(1, 3)
+    generalSize = random.randint(5, 50)
+    multiplier = random.randint(1, 4)
     sq['width']  = (generalSize + random.randint(0, 15)) * multiplier
     sq['height'] = (generalSize + random.randint(0, 15)) * multiplier
     sq['x'], sq['y'] = getRandomOffCameraPos(camerax, cameray, sq['width'], sq['height'])
