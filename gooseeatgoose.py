@@ -351,7 +351,7 @@ def runGame():
             for i in range(len(poopObjs)-1, -1, -1):
                 pObj = poopObjs[i]
                 if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
-                    playerObj['size'] -= 0.7
+                    playerObj['size'] -= 3
                     del poopObjs[i] 
                     if playerObj['facing'] == LEFT:
                             playerObj['surface'] = pygame.transform.scale(L_GOOSE_IMG, (playerObj['size'], playerObj['size']))
