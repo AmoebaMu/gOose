@@ -286,6 +286,8 @@ def runGame():
                     playerObj['facing'] = RIGHT
                 elif winMode and event.key == K_r:
                     return
+                elif winMode and playerObj['size'] > 750:
+                    return
 
             elif event.type == KEYUP:
                 # stop moving the player's squirrel
