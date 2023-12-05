@@ -286,8 +286,6 @@ def runGame():
                     playerObj['facing'] = RIGHT
                 elif winMode and event.key == K_r:
                     return
-                elif winMode and playerObj['size'] > 750:
-                    return
 
             elif event.type == KEYUP:
                 # stop moving the player's squirrel
@@ -337,6 +335,8 @@ def runGame():
 
                         if playerObj['size'] > WINSIZE:
                             winMode = True # turn on "win mode"
+                            if playerObj['size'] >= 600:
+                                return
 
                     elif not invulnerableMode:
                         # player is smaller and takes damage
@@ -370,6 +370,8 @@ def runGame():
                             playerObj['surface'] = pygame.transform.scale(R_GOOSE_IMG, (playerObj['size'], playerObj['size']))
                     if playerObj['size'] > WINSIZE:
                         winMode = True 
+                        if playerObj['size'] >= 600:
+                                return
                     
             
             
