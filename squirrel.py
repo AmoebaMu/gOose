@@ -1,3 +1,6 @@
+# Original Code with group member comments*****
+# rb - Rukia Beduni, ak - Amy Kusnandar, np - Nashrah Purnita
+
 # Squirrel Eat Squirrel (a 2D Katamari Damacy clone)
 # By Al Sweigart al@inventwithpython.com
 # http://inventwithpython.com/pygame
