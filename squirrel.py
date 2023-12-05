@@ -65,10 +65,10 @@ def main():
 
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
-    pygame.display.set_icon(pygame.image.load('gameicon.png'))  #pygame function that sets the icon on the windows title bar 
-    DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT)) #is a small image ideal 32 x 32 pixels on a surface object used as a windows icon. If not the ideal size, the image will be compressed. 
+    pygame.display.set_icon(pygame.image.load('gameicon.png'))  #rb - pygame function that sets the icon on the windows title bar 
+    DISPLAYSURF = pygame.display.set_mode((WINWIDTH, WINHEIGHT)) #rb - is a small image ideal 32 x 32 pixels on a surface object used as a windows icon. If not the ideal size, the image will be compressed. 
     pygame.display.set_caption('Squirrel Eat Squirrel')         
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)         #sets the font which the game will be viewed in 
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)         #rb - sets the font which the game will be viewed in 
 
     # load the image files
     L_SQUIR_IMG = pygame.image.load('squirrel.png') #rb- This line is where the enemy and player squirrel images facing left are loaded, its noted to put png file in the same folder as gooseatgoose, failure to do so will result in a error.
