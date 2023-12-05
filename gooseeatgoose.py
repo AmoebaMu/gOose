@@ -351,6 +351,10 @@ def runGame():
                 if 'rect' in pObj and playerObj['rect'].colliderect(pObj['rect']):
                     playerObj['size'] -= 0.7
                     del poopObjs[i] 
+                    if playerObj['facing'] == LEFT:
+                            playerObj['surface'] = pygame.transform.scale(L_GOOSE_IMG, (playerObj['size'], playerObj['size']))
+                    if playerObj['facing'] == RIGHT:
+                            playerObj['surface'] = pygame.transform.scale(R_GOOSE_IMG, (playerObj['size'], playerObj['size']))
             
             # check if the player has collided with any tools
             for i in range(len(toolObjs)-1, -1, -1):
@@ -358,6 +362,10 @@ def runGame():
                 if 'rect' in toObj and playerObj['rect'].colliderect(toObj['rect']):
                     playerObj['size'] += 20
                     del toolObjs[i]
+                    if playerObj['facing'] == LEFT:
+                            playerObj['surface'] = pygame.transform.scale(L_GOOSE_IMG, (playerObj['size'], playerObj['size']))
+                    if playerObj['facing'] == RIGHT:
+                            playerObj['surface'] = pygame.transform.scale(R_GOOSE_IMG, (playerObj['size'], playerObj['size']))
                     if playerObj['size'] > WINSIZE:
                         winMode = True 
                     
